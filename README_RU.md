@@ -68,6 +68,7 @@ EarthWorks — мод для Valheim, который превращает стр
 - Экономика материалов, инструментов, выносливости и времени пока не завершена.
 - Не подтверждены полный reload/restart, второй клиент и длительная multiplayer-сессия.
 - Перекрёстки, дорожная сеть, площадки, котлованы и Terrain Edit находятся в следующих этапах.
+- Точная paint-grid parity, сохранение alpha специальных mask-данных, seams/углы chunks и очистка травы только внутри коридора теперь являются обязательным pre-release gate.
 - Мод должен быть установлен на сервере и у каждого участвующего клиента.
 
 ## Установка
@@ -99,6 +100,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Подробности релиза 0.6.4](docs/RELEASE_0.6.4_RU.md)
 - [Как предложить изменение](CONTRIBUTING.md)
 - [Архитектура и карта исходников](docs/ARCHITECTURE_RU.md)
+- [Совместимость terrain и план проверки инструментов](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN_RU.md)
 
 ## License
 

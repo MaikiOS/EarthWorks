@@ -8,6 +8,8 @@ This build tests one continuous Route workflow:
 
 `route -> interactive editing -> surface -> review -> automatic board -> construction stages`
 
+Paint-grid, Heightmap seam/corner, ATMC coexistence, and per-tool evidence are specified in [Terrain compatibility and tool test plan](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN.md).
+
 Geometry, height, and width are now edited together around the selected flag.
 The draft remains private until project creation. Instant construction stages
 remain restricted to character `Test` in `TerrainRamp_Lab`.

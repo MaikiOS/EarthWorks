@@ -2,6 +2,13 @@
 
 [Русская версия](CHANGELOG_RU.md)
 
+## Unreleased
+
+- Recorded a successful initial in-game English-localization and Route-tool smoke check; exhaustive per-screen/tool acceptance remains open.
+- Added the ATMC 1.4.8 terrain compatibility audit and runtime evidence plan.
+- Added explicit pre-release gates for native paint-grid mapping, special-mask alpha, Heightmap seams/corners, exact paint preview, and corridor-scoped clutter clearing.
+- Added the independently implemented manual-terrain-tool direction with measured 2×2 m and 4×4 m square-footprint candidates and a Level/Paint-first milestone.
+
 ## 0.6.4
 
 - Rebuilt and audited against Valheim 1.0.12, Steam build 25253764, network version 40, Unity 6000.0.75f1, BepInExPack 5.4.2350, and the latest official Jotunn release, 2.30.0.

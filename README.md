@@ -62,6 +62,7 @@ Current version: **0.6.4**. Built and statically verified against Valheim **1.0.
 - Material, tool, stamina, and build-time economy is incomplete.
 - Full reload/restart, second-client, and long multiplayer-session acceptance is pending.
 - Intersections, road networks, platforms, excavations, and Terrain Edit remain roadmap work.
+- Paint parity with the corrected Valheim 1.0 grid, special-mask alpha, chunk seams/corners, and corridor-only clutter clearing is now an explicit pre-release gate.
 - EarthWorks must be installed on the server and every participating client.
 
 ## Installation
@@ -89,6 +90,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Changelog](CHANGELOG.md) · [Русский](CHANGELOG_RU.md)
 - [Contributing](CONTRIBUTING.md) · [Русский](CONTRIBUTING_RU.md)
 - [Architecture](docs/ARCHITECTURE.md) · [Русский](docs/ARCHITECTURE_RU.md)
+- [Terrain compatibility and tool test plan](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN.md) · [Русский](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN_RU.md)
 - [0.6.4 release notes](docs/RELEASE_0.6.4.md) · [Русский](docs/RELEASE_0.6.4_RU.md)
 
 ## License

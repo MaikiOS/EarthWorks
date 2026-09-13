@@ -2,6 +2,8 @@
 
 [English (primary)](TESTING.md)
 
+Paint-grid, seams/углы Heightmap, совместная работа с ATMC и доказательства по каждому инструменту описаны в [плане terrain-совместимости и тестирования](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN_RU.md).
+
 ## Среда
 
 - Только профиль `TerrainRamp-1.0-Test`.

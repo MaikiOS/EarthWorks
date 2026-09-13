@@ -16,6 +16,16 @@ EarthWorks aims to remove repetitive terrain clicks while preserving Valheim sur
 - English/Russian localization with automated 227-token parity checks and optional external overrides.
 - Guarded development deployment, 24 geometry checks, and 5 persistence/localization checks.
 
+## Immediate gate — usability and terrain correctness
+
+- Run a guided usability pass over every existing Route action before redesigning the interface.
+- Replace the obsolete paint half-cell offset, preserve special mask alpha, and prove paint writes at zone seams and four-zone corners.
+- Make paint preview show the same texel core and bilinear feather that execution writes.
+- Restrict clutter clearing to the actual road corridor.
+- Verify EarthWorks both with and without AdvancedTerrainModifiersCompatible 1.4.8.
+
+See the [terrain compatibility and tool test plan](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN.md) for the confirmed contracts, current gaps, and evidence format.
+
 ## Phase 1 — Proven Road Project 0.1
 
 - Complete the controlled runtime protocol on Valheim 1.0.12/Jotunn 2.30.0.
@@ -68,8 +78,10 @@ EarthWorks aims to remove repetitive terrain clicks while preserving Valheim sur
 
 - Raise, lower, smooth, level, slope, paint, and restore original terrain.
 - Circle, square/grid-aligned, and line brushes.
+- Native-grid point, 2×2 m core, and 4×4 m work-area candidates; final texel footprints are locked only after in-game measurement.
 - Exact and relative grid heights, pinned vertices, planes, and proportional editing.
 - Draft-only undo/redo and server-side overlap locking.
+- Start with one square Level and one square Paint tool that share the same tested footprint and preview path.
 
 The active [TerrainTools compatibility branch](https://github.com/MaikiOS/TerrainTools/tree/fix/valheim-1.0-compat) informed this direction: grid-aligned operations, exact elevation, original-terrain reset, live radius/sharpness preview, and explicit compatibility checks are useful product ideas. TerrainTools is GPL-3.0; EarthWorks will not copy its implementation into this proprietary codebase. Any adopted behavior must be independently designed and implemented.
 
