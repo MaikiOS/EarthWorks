@@ -1,6 +1,6 @@
 # EarthWorks 0.6.3 — Valheim 1.0.12 and localization
 
-[Русская версия](RELEASE_0.6.3_RU.md)
+[Русская версия](https://github.com/MaikiOS/EarthWorks/blob/main/docs/RELEASE_0.6.3_RU.md)
 
 EarthWorks 0.6.3 is a compatibility and localization patch for Valheim 1.0.12 (Steam build 25253764, network version 40, Unity 6000.0.75f1) and Jotunn 2.30.0.
 
