@@ -1,0 +1,15 @@
+artifacts/
+**/bin/
+**/obj/
+release/**/*.dll
+release/*.zip
+*.user
+*.suo
+*.docx
+.vs/
+.idea/
+AGENTS.md
+DECISIONS.md
+scripts/Deploy-TestBuild.ps1
+scripts/build_roadmap_docx.py
+scripts/render_roadmap_with_word.ps1
