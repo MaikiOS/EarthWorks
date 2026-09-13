@@ -1,0 +1,10 @@
+{
+  "name": "EarthWorks",
+  "version_number": "0.6.3",
+  "website_url": "https://github.com/MaikiOS/EarthWorks",
+  "description": "Plan and execute persistent terrain road projects with exact previews.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2350",
+    "ValheimModding-Jotunn-2.30.0"
+  ]
+}

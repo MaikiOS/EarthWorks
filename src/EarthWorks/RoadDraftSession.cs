@@ -116,14 +116,16 @@ namespace OstrixMods.EarthWorks
                 {
                     case RoadDraftState.Geometry:
                         return selectedPointIndex >= 0
-                            ? WithRoadbed(
-                                "Точка " + (selectedPointIndex + 1) +
-                                (points[selectedPointIndex].ElevationAnchored ? " · Y закреплена" : " · Y Auto") +
-                                " | Y " + SelectedTargetElevation().ToString("F2") + " м" +
-                                " | ширина " + CurrentLeftWidth.ToString("F2") +
-                                " / " + CurrentRightWidth.ToString("F2") + " м")
-                            : WithRoadbed("Высота: " + EarthWorksLocalization.ElevationModeName(elevationMode) +
-                                " | выбери флагшток или Ctrl+ЛКМ добавь новый.");
+                            ? WithRoadbed(EarthWorksLocalization.Text(
+                                "draft_selected_summary",
+                                selectedPointIndex + 1,
+                                EarthWorksLocalization.Text(points[selectedPointIndex].ElevationAnchored ? "draft_y_anchored" : "draft_y_auto"),
+                                SelectedTargetElevation(),
+                                CurrentLeftWidth,
+                                CurrentRightWidth))
+                            : WithRoadbed(EarthWorksLocalization.Text(
+                                "draft_select_flag",
+                                EarthWorksLocalization.ElevationModeName(elevationMode)));
                     case RoadDraftState.Height:
                         if (selectedPointIndex >= 0)
                         {

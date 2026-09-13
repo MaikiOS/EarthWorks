@@ -12,12 +12,12 @@ namespace OstrixMods.EarthWorks
             reason = string.Empty;
             if (plan == null || !plan.IsValid || plan.Record == null)
             {
-                reason = plan?.InvalidReason ?? "Проект дороги не рассчитан.";
+                reason = plan?.InvalidReason ?? EarthWorksLocalization.Text("board_plan_missing");
                 return false;
             }
             if (!TryFindBoardPosition(plan.Record, out Vector3 position, out Quaternion rotation))
             {
-                reason = "Возле точки A нет безопасного места для автоматической таблички.";
+                reason = EarthWorksLocalization.Text("board_safe_place_missing");
                 return false;
             }
 
@@ -25,7 +25,7 @@ namespace OstrixMods.EarthWorks
                 EarthWorksPlugin.BoardPrefabName);
             if (!prefab)
             {
-                reason = "Префаб таблички проекта не зарегистрирован.";
+                reason = EarthWorksLocalization.Text("board_prefab_missing");
                 return false;
             }
 
@@ -38,7 +38,7 @@ namespace OstrixMods.EarthWorks
                 {
                     UnityEngine.Object.Destroy(instance);
                 }
-                reason = "Valheim не создал сохраняемую табличку проекта.";
+                reason = EarthWorksLocalization.Text("board_creation_failed");
                 return false;
             }
 

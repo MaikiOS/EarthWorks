@@ -43,13 +43,13 @@ namespace OstrixMods.EarthWorks
                 EarthWorksPlugin.Log.LogError(exception);
                 bool rolledBack = TryRollback(batches, false);
                 completed(false, rolledBack
-                    ? "Изменение земли не применено; исходное состояние восстановлено."
-                    : "Ошибка применения земли и её отката. Останови тест и сохрани лог.");
+                    ? EarthWorksLocalization.Text("terrain_apply_rolled_back")
+                    : EarthWorksLocalization.Text("terrain_apply_rollback_failed"));
                 return;
             }
 
             ResetClutter(record);
-            completed(true, "Земля изменена по сохранённому плану проекта.");
+            completed(true, EarthWorksLocalization.Text("terrain_applied"));
         }
 
         public static void ApplySurface(RoadProjectRecord record, Action<bool, string> completed)
@@ -75,7 +75,7 @@ namespace OstrixMods.EarthWorks
             if (batches.Count == 0)
             {
                 ResetClutter(record);
-                completed(true, "Выбрана чистая земля; отдельное покрытие не требуется.");
+                completed(true, EarthWorksLocalization.Text("surface_bare_no_paint"));
                 return;
             }
 
@@ -107,15 +107,15 @@ namespace OstrixMods.EarthWorks
                 EarthWorksPlugin.Log.LogError(exception);
                 bool rolledBack = TryRollback(batches, true);
                 completed(false, rolledBack
-                    ? "Покрытие не применено; исходная окраска земли восстановлена."
-                    : "Ошибка покрытия и его отката. Останови тест и сохрани лог.");
+                    ? EarthWorksLocalization.Text("surface_apply_rolled_back")
+                    : EarthWorksLocalization.Text("surface_apply_rollback_failed"));
                 return;
             }
 
             ResetClutter(record);
             completed(true, clearing
-                ? "Полотно очищено от травы. Крупные объекты пока отмечаются для ручной расчистки."
-                : "Покрытие дороги применено и сохранено.");
+                ? EarthWorksLocalization.Text("clearing_applied")
+                : EarthWorksLocalization.Text("surface_applied"));
         }
 
         private static bool TryPrepare(
@@ -127,7 +127,7 @@ namespace OstrixMods.EarthWorks
             result = null;
             if (record == null || record.Edits.Count == 0)
             {
-                error = "Сохранённый план проекта пуст или повреждён.";
+                error = EarthWorksLocalization.Text("terrain_plan_corrupt");
                 return false;
             }
             Dictionary<TerrainComp, CompilerBatch> batches = new Dictionary<TerrainComp, CompilerBatch>();
@@ -143,7 +143,7 @@ namespace OstrixMods.EarthWorks
                     if (!PrivateArea.CheckAccess(stored.Position, 0f, false, false) ||
                         Location.IsInsideNoBuildLocation(stored.Position))
                     {
-                        error = "Доступ к части строительной площадки теперь запрещён.";
+                        error = EarthWorksLocalization.Text("terrain_access_lost");
                         return false;
                     }
 
@@ -176,7 +176,7 @@ namespace OstrixMods.EarthWorks
                         TerrainComp compiler = heightmap.GetAndCreateTerrainCompiler();
                         if (!compiler)
                         {
-                            error = "Valheim не создал сохранитель terrain для участка проекта.";
+                            error = EarthWorksLocalization.Text("terrain_comp_create_failed");
                             return false;
                         }
                         if (!batches.TryGetValue(compiler, out CompilerBatch batch))
@@ -184,7 +184,7 @@ namespace OstrixMods.EarthWorks
                             batch = CreateBatch(compiler, heightmap);
                             if (batch == null)
                             {
-                                error = "Структура terrain этой версии Valheim несовместима с EarthWorks.";
+                                error = EarthWorksLocalization.Text("terrain_structure_incompatible");
                                 return false;
                             }
                             batches.Add(compiler, batch);
@@ -201,7 +201,7 @@ namespace OstrixMods.EarthWorks
 
                     if (!foundCopy)
                     {
-                        error = "Часть проекта выгружена или terrain-сетка мира изменилась.";
+                        error = EarthWorksLocalization.Text("terrain_unloaded");
                         return false;
                     }
                 }
@@ -209,7 +209,7 @@ namespace OstrixMods.EarthWorks
             catch (Exception exception)
             {
                 EarthWorksPlugin.Log.LogError(exception);
-                error = "Не удалось подготовить terrain-операцию проекта.";
+                error = EarthWorksLocalization.Text("terrain_prepare_failed");
                 return false;
             }
 

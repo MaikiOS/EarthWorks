@@ -31,7 +31,7 @@ namespace OstrixMods.EarthWorks
             if (points == null || points.Count < 2 || straightSegments == null ||
                 straightSegments.Count != points.Count - 1)
             {
-                return Invalidate(plan, "Для дороги нужны минимум две корректные точки.");
+                return Invalidate(plan, EarthWorksLocalization.Text("plan_need_two"));
             }
 
             RoadRoute route;
@@ -42,7 +42,7 @@ namespace OstrixMods.EarthWorks
             catch (Exception exception)
             {
                 EarthWorksPlugin.Log.LogWarning(exception);
-                return Invalidate(plan, "Геометрия маршрута некорректна.");
+                return Invalidate(plan, EarthWorksLocalization.Text("plan_geometry_invalid"));
             }
 
             int subdivisions = Mathf.Max(2, subdivisionsPerSegment);
@@ -54,11 +54,11 @@ namespace OstrixMods.EarthWorks
                 Vector3 probe = new Vector3((float)sample.Position.X, 0f, (float)sample.Position.Z);
                 if (!FootprintLoaded(probe) || !RoadTerrain.TryGetHeight(probe, out float ground))
                 {
-                    return Invalidate(plan, "Весь маршрут и его обочины должны быть загружены.");
+                    return Invalidate(plan, EarthWorksLocalization.Text("plan_loaded_required"));
                 }
                 if (ZoneSystem.instance && ground < ZoneSystem.instance.m_waterLevel - 0.05f)
                 {
-                    return Invalidate(plan, "Первая версия маршрута не прокладывает дорогу через воду.");
+                    return Invalidate(plan, EarthWorksLocalization.Text("plan_water_unsupported"));
                 }
 
                 double? fixedElevation = null;
@@ -136,14 +136,14 @@ namespace OstrixMods.EarthWorks
                 {
                     return Invalidate(
                         plan,
-                        "Не удалось построить устойчивые плоскости рельефа у A/B. Отключи Alt или перенеси крайнюю точку с обрыва.");
+                        EarthWorksLocalization.Text("plan_endpoint_planes_failed"));
                 }
                 endpointTransition = Mathf.Max(endpointTransition, Mathf.Max(startGrid, endGrid) * 2f);
                 double startDistance = routeSamples[1].Distance - routeSamples[0].Distance;
                 double endDistance = routeSamples[last].Distance - routeSamples[last - 1].Distance;
                 if (startDistance <= 0.0001 || endDistance <= 0.0001)
                 {
-                    return Invalidate(plan, "Крайний участок маршрута слишком короткий для прилегания A/B.");
+                    return Invalidate(plan, EarthWorksLocalization.Text("plan_endpoint_short"));
                 }
                 double startSlope = (elevations[1] - elevations[0]) / startDistance;
                 double endSlope = (elevations[last] - elevations[last - 1]) / endDistance;
@@ -167,7 +167,7 @@ namespace OstrixMods.EarthWorks
             {
                 return Invalidate(
                     plan,
-                    "Выбранный профиль полотна превышает допустимый продольный уклон.");
+                    EarthWorksLocalization.Text("plan_grade_exceeded"));
             }
 
             List<CenterSample> center = new List<CenterSample>(routeSamples.Count);
@@ -225,7 +225,7 @@ namespace OstrixMods.EarthWorks
             {
                 return Invalidate(
                     plan,
-                    "Поворот слишком тесный для выбранной ширины. Уменьши ширину или увеличь радиус кривой.");
+                    EarthWorksLocalization.Text("plan_turn_tight"));
             }
 
             float endBlendLength = fitEndpointPlanes ||
@@ -234,7 +234,7 @@ namespace OstrixMods.EarthWorks
                     : 0f;
             if (!ValidateLoadedCorridor(center, endBlendLength))
             {
-                return Invalidate(plan, "Весь маршрут и его обочины должны быть загружены.");
+                return Invalidate(plan, EarthWorksLocalization.Text("plan_loaded_required"));
             }
 
             CalculateBounds(center, endBlendLength, out Vector3 planCenter, out float radius);
@@ -268,7 +268,7 @@ namespace OstrixMods.EarthWorks
                         }
                         if (ZoneSystem.instance && vertex.y < ZoneSystem.instance.m_waterLevel - 0.05f)
                         {
-                            Invalidate(plan, "Маршрут или его обочина попадает в воду.");
+                            Invalidate(plan, EarthWorksLocalization.Text("plan_hits_water"));
                         }
 
                         WorldVertexKey key = new WorldVertexKey(vertex.x, vertex.z);
@@ -285,16 +285,16 @@ namespace OstrixMods.EarthWorks
                             Mathf.Abs(shared.TargetHeight - baseHeight) >
                             EarthWorksPlugin.EffectiveTerrainDelta - DeltaSafetyMargin)
                         {
-                            Invalidate(plan, "Дорога выходит за разрешённый сервером предел изменения высоты.");
+                            Invalidate(plan, EarthWorksLocalization.Text("plan_height_limit"));
                         }
 
                         if (!PrivateArea.CheckAccess(vertex, 0f, false, false))
                         {
-                            Invalidate(plan, "Часть маршрута защищена охранным тотемом.");
+                            Invalidate(plan, EarthWorksLocalization.Text("plan_private_area"));
                         }
                         if (Location.IsInsideNoBuildLocation(vertex))
                         {
-                            Invalidate(plan, "Часть маршрута попадает в запретную зону мира.");
+                            Invalidate(plan, EarthWorksLocalization.Text("plan_no_build_zone"));
                         }
 
                         RoadVertexEdit edit = new RoadVertexEdit
@@ -324,8 +324,9 @@ namespace OstrixMods.EarthWorks
                         {
                             return Invalidate(
                                 plan,
-                                "Проект превышает безопасный лимит terrain-вершин: " +
-                                EarthWorksPlugin.EffectiveMaximumVertices + ".");
+                                EarthWorksLocalization.Text(
+                                    "plan_vertex_limit",
+                                    EarthWorksPlugin.EffectiveMaximumVertices));
                         }
                     }
                 }
@@ -333,7 +334,7 @@ namespace OstrixMods.EarthWorks
 
             if (plan.Edits.Count == 0)
             {
-                return Invalidate(plan, "Маршрут не затрагивает загруженные terrain-вершины.");
+                return Invalidate(plan, EarthWorksLocalization.Text("plan_no_vertices"));
             }
 
             plan.Record = BuildRecord(
@@ -756,11 +757,11 @@ namespace OstrixMods.EarthWorks
             switch (failure)
             {
                 case ElevationFailure.TerrainLimitExceeded:
-                    return "Профиль выходит за разрешённый сервером предел изменения высоты.";
+                    return EarthWorksLocalization.Text("profile_height_limit");
                 case ElevationFailure.GradeLimitExceeded:
-                    return "Между закреплёнными высотами невозможно выдержать допустимый уклон.";
+                    return EarthWorksLocalization.Text("profile_grade_impossible");
                 default:
-                    return "Не удалось рассчитать вертикальный профиль маршрута.";
+                    return EarthWorksLocalization.Text("profile_failed");
             }
         }
 

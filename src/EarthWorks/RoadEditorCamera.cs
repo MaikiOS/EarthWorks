@@ -46,14 +46,14 @@ namespace OstrixMods.EarthWorks
         public RoadCameraMode Mode => mode;
         public bool ShowGrid => showGrid;
         public string PointerText => hasPointerGround
-            ? $"Точка под курсором: X {pointerGround.x:0.0} · Y {pointerGround.y:0.0} · Z {pointerGround.z:0.0}"
-            : "Точка под курсором: вне загруженного рельефа";
+            ? EarthWorksLocalization.Text("camera_pointer", pointerGround.x, pointerGround.y, pointerGround.z)
+            : EarthWorksLocalization.Text("camera_pointer_unloaded");
         public string HudText => Active
-            ? "РЕДАКТОР ПРОЕКТА · " + EarthWorksLocalization.CameraModeName(mode)
-            : "F7 · открыть редактор проекта";
+            ? EarthWorksLocalization.Text("camera_editor_title", EarthWorksLocalization.CameraModeName(mode))
+            : EarthWorksLocalization.Text("camera_open");
         public string ControlsText => Active
-            ? "MMB: двигать · Shift+MMB: вращать · WASD/стрелки: двигать · колесо: масштаб · Numpad 7/5: вид"
-            : "F7: редактор Plan/Isometric";
+            ? EarthWorksLocalization.Text("camera_active_help")
+            : EarthWorksLocalization.Text("camera_inactive_help");
 
         public void Update(RoadDraftSession session, bool toolActive)
         {
@@ -98,7 +98,7 @@ namespace OstrixMods.EarthWorks
                 {
                     Player.m_localPlayer?.Message(
                         MessageHud.MessageType.Center,
-                        "Редактор закрыт: рядом враждебное существо.");
+                        EarthWorksLocalization.Text("camera_closed_threat"));
                     Deactivate();
                     return;
                 }
@@ -257,7 +257,7 @@ namespace OstrixMods.EarthWorks
             }
             Player.m_localPlayer?.Message(
                 MessageHud.MessageType.Center,
-                "Редактор закрыт: персонаж получил урон.");
+                EarthWorksLocalization.Text("camera_closed_damage"));
             Deactivate();
         }
 

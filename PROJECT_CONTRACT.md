@@ -1,5 +1,7 @@
 # EarthWorks Project Contract
 
+[Русская версия](PROJECT_CONTRACT_RU.md)
+
 ## Product Promise
 
 EarthWorks is a vanilla-friendly Valheim mod for planning and carrying out roads,

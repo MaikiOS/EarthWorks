@@ -1,4 +1,6 @@
-# EarthWorks 0.6.2 Unified Editor And Laboratory Test
+# EarthWorks 0.6.3 Unified Editor And Laboratory Test
+
+[Русская версия](TESTING_RU.md)
 
 ## Scope
 
@@ -16,7 +18,7 @@ remain restricted to character `Test` in `TerrainRamp_Lab`.
 - Character: `Test`.
 - World: `TerrainRamp_Lab`.
 - Never install or test EarthWorks in `Default`.
-- Expected log lines: `EarthWorks 0.6.2 loaded` and
+- Expected log lines: `EarthWorks 0.6.3 loaded` and
   `Terrain Ramp Test Bootstrap 0.3.0 loaded for profile-only testing`.
 
 ## Laboratory Panel

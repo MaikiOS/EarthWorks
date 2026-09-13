@@ -21,7 +21,7 @@ namespace OstrixMods.EarthWorks
     {
         public const string PluginGuid = "com.ostrix.earthworks";
         public const string PluginName = "EarthWorks";
-        public const string PluginVersion = "0.6.2";
+        public const string PluginVersion = "0.6.3";
         internal const string RoadPrefabName = "OstrixEarthWorksRoadProjectTool";
         internal const string BoardPrefabName = "OstrixEarthWorksRoadProjectBoard";
 
@@ -250,47 +250,47 @@ namespace OstrixMods.EarthWorks
                 "Road Draft",
                 "MaximumControlPoints",
                 64,
-                "Максимум контрольных точек одного черновика дороги.");
+                "Maximum control points in one road draft.");
             CurveSubdivisions = Config.Bind(
                 "Road Draft",
                 "CurveSubdivisions",
                 12,
-                "Число отрезков preview между соседними контрольными точками.");
+                "Preview segments between neighboring control points.");
             MaximumVertices = Config.Bind(
                 "Safety",
                 "MaximumVertices",
                 8192,
-                "Максимум terrain-вершин одного проекта дороги.");
+                "Maximum terrain vertices in one road project.");
             AuthorizedTerrainDelta = Config.Bind(
                 "Server Rules",
                 "AuthorizedTerrainDelta",
                 8f,
-                "Разрешённое сервером отклонение terrain от исходной высоты. Оставь 8 без проверенного расширяющего мода.");
+                "Server-authorized terrain deviation from original height. Keep 8 unless a compatible extension is verified.");
             MaximumGradePercent = Config.Bind(
                 "Road Geometry",
                 "MaximumGradePercent",
                 35f,
-                "Максимальный продольный уклон дороги в процентах.");
+                "Maximum longitudinal road grade in percent.");
             ShoulderWidth = Config.Bind(
                 "Road Geometry",
                 "ShoulderWidth",
                 2f,
-                "Ширина бокового перехода от плоской дороги к существующему рельефу.");
+                "Side transition width from the flat roadbed to existing terrain.");
             DefaultRoadWidth = Config.Bind(
                 "Road Geometry",
                 "DefaultRoadWidth",
                 4f,
-                "Полная ширина дороги по умолчанию.");
+                "Default full road width.");
             NextStageKey = Config.Bind(
                 "Input",
                 "NextStageKey",
                 KeyCode.G,
-                "Переход к следующему этапу редактора и создание проверенного проекта.");
+                "Advance the editor and create a validated project.");
             EditorCameraKey = Config.Bind(
                 "Input",
                 "EditorCameraKey",
                 KeyCode.F7,
-                "Вход и выход из редактора проекта EarthWorks.");
+                "Enter or leave the EarthWorks project editor.");
         }
 
         private RoadDraftSession EnsureSession()
@@ -336,7 +336,7 @@ namespace OstrixMods.EarthWorks
                     Name = EarthWorksLocalization.Token("piece_name"),
                     Description = EarthWorksLocalization.Token("piece_desc"),
                     PieceTable = "_HoePieceTable",
-                    Category = "EarthWorks",
+                    Category = PieceCategories.Misc,
                     Icon = roadIcon
                 };
 
@@ -550,42 +550,42 @@ namespace OstrixMods.EarthWorks
             EditorChoice(ref x, panel.y + 7f, 110f, "ISOMETRIC", editorCamera.Mode == RoadCameraMode.Isometric,
                 () => editorCamera.SetMode(RoadCameraMode.Isometric));
             x += 10f;
-            EditorChoice(ref x, panel.y + 7f, 92f, "Сейчас", session.PreviewMode == RoadEditorPreviewMode.Current,
+            EditorChoice(ref x, panel.y + 7f, 92f, EarthWorksLocalization.Text("editor_preview_current"), session.PreviewMode == RoadEditorPreviewMode.Current,
                 () => session.SetPreviewMode(RoadEditorPreviewMode.Current));
-            EditorChoice(ref x, panel.y + 7f, 92f, "Результат", session.PreviewMode == RoadEditorPreviewMode.Result,
+            EditorChoice(ref x, panel.y + 7f, 92f, EarthWorksLocalization.Text("editor_preview_result"), session.PreviewMode == RoadEditorPreviewMode.Result,
                 () => session.SetPreviewMode(RoadEditorPreviewMode.Result));
-            EditorChoice(ref x, panel.y + 7f, 102f, "Разница", session.PreviewMode == RoadEditorPreviewMode.Difference,
+            EditorChoice(ref x, panel.y + 7f, 102f, EarthWorksLocalization.Text("editor_preview_difference"), session.PreviewMode == RoadEditorPreviewMode.Difference,
                 () => session.SetPreviewMode(RoadEditorPreviewMode.Difference));
             x += 12f;
             x = panel.x + 220f;
             float layerY = panel.y + 51f;
-            showRoadbed = GUI.Toggle(new Rect(x, layerY, 105f, 30f), showRoadbed, "Полотно",
+            showRoadbed = GUI.Toggle(new Rect(x, layerY, 105f, 30f), showRoadbed, EarthWorksLocalization.Text("editor_layer_roadbed"),
                 showRoadbed ? editorButtonActiveStyle : editorButtonStyle);
             x += 105f;
             showDifference = GUI.Toggle(new Rect(x, layerY, 105f, 30f), showDifference, "Cut/Fill",
                 showDifference ? editorButtonActiveStyle : editorButtonStyle);
             x += 105f;
-            bool gridVisible = GUI.Toggle(new Rect(x, layerY, 100f, 30f), editorCamera.ShowGrid, "Сетка 2 м",
+            bool gridVisible = GUI.Toggle(new Rect(x, layerY, 100f, 30f), editorCamera.ShowGrid, EarthWorksLocalization.Text("editor_layer_grid"),
                 editorCamera.ShowGrid ? editorButtonActiveStyle : editorButtonStyle);
             editorCamera.SetGridVisible(gridVisible);
             x += 100f;
-            showCharacters = GUI.Toggle(new Rect(x, layerY, 110f, 30f), showCharacters, "Персонажи",
+            showCharacters = GUI.Toggle(new Rect(x, layerY, 110f, 30f), showCharacters, EarthWorksLocalization.Text("editor_layer_characters"),
                 showCharacters ? editorButtonActiveStyle : editorButtonStyle);
             x += 110f;
-            showPieces = GUI.Toggle(new Rect(x, layerY, 105f, 30f), showPieces, "Постройки",
+            showPieces = GUI.Toggle(new Rect(x, layerY, 105f, 30f), showPieces, EarthWorksLocalization.Text("editor_layer_pieces"),
                 showPieces ? editorButtonActiveStyle : editorButtonStyle);
             x += 105f;
-            showWorldObjects = GUI.Toggle(new Rect(x, layerY, 140f, 30f), showWorldObjects, "Объекты мира",
+            showWorldObjects = GUI.Toggle(new Rect(x, layerY, 140f, 30f), showWorldObjects, EarthWorksLocalization.Text("editor_layer_world"),
                 showWorldObjects ? editorButtonActiveStyle : editorButtonStyle);
             x += 148f;
-            if (GUI.Button(new Rect(x, layerY, 105f, 30f), "Чистый вид", editorButtonStyle))
+            if (GUI.Button(new Rect(x, layerY, 105f, 30f), EarthWorksLocalization.Text("editor_clean_view"), editorButtonStyle))
             {
                 showCharacters = false;
                 showPieces = false;
                 showWorldObjects = false;
             }
             x += 110f;
-            if (GUI.Button(new Rect(x, layerY, 82f, 30f), "Показать", editorButtonStyle))
+            if (GUI.Button(new Rect(x, layerY, 82f, 30f), EarthWorksLocalization.Text("editor_show_all"), editorButtonStyle))
             {
                 showCharacters = true;
                 showPieces = true;
@@ -599,7 +599,7 @@ namespace OstrixMods.EarthWorks
         {
             Rect panel = EditorLeftRect();
             GUI.Box(panel, GUIContent.none, panelStyle);
-            GUI.Label(new Rect(panel.x + 14f, panel.y + 10f, panel.width - 28f, 30f), "ЭТАПЫ ПРОЕКТА", editorTitleStyle);
+            GUI.Label(new Rect(panel.x + 14f, panel.y + 10f, panel.width - 28f, 30f), EarthWorksLocalization.Text("editor_stages"), editorTitleStyle);
             RoadDraftState[] states =
             {
                 RoadDraftState.Drawing,
@@ -617,7 +617,7 @@ namespace OstrixMods.EarthWorks
             }
             GUI.Label(
                 new Rect(panel.x + 14f, panel.yMax - 122f, panel.width - 28f, 104f),
-                "LMB: выбрать/тянуть\nCtrl+LMB: добавить точку\nDelete: удалить точку\nMMB: двигать камеру\nShift+MMB: вращать\nF7: выйти",
+                EarthWorksLocalization.Text("editor_controls"),
                 editorMutedStyle);
         }
 
@@ -632,7 +632,7 @@ namespace OstrixMods.EarthWorks
             switch (session.State)
             {
                 case RoadDraftState.Drawing:
-                    EditorText(panel, ref y, "Поставь точки маршрута. Двойной LMB по последней точке или G завершает маршрут.");
+                    EditorText(panel, ref y, EarthWorksLocalization.Text("editor_draw_help"));
                     EditorText(panel, ref y, editorCamera.PointerText);
                     break;
                 case RoadDraftState.Geometry:
@@ -651,19 +651,19 @@ namespace OstrixMods.EarthWorks
                     DrawReviewInspector(panel, ref y);
                     break;
                 default:
-                    EditorText(panel, ref y, "LMB по земле начинает новый маршрут.");
+                    EditorText(panel, ref y, EarthWorksLocalization.Text("editor_start_help"));
                     break;
             }
             if ((int)session.State >= (int)RoadDraftState.Geometry && session.State != RoadDraftState.Idle)
             {
                 y = Mathf.Max(y + 8f, panel.yMax - 190f);
-                EditorText(panel, ref y, "Профиль: " + EarthWorksLocalization.LongitudinalProfileName(session.LongitudinalProfile));
-                if (GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 36f), "Сменить профиль полотна (P)", editorButtonStyle))
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_profile", EarthWorksLocalization.LongitudinalProfileName(session.LongitudinalProfile)));
+                if (GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 36f), EarthWorksLocalization.Text("editor_cycle_profile"), editorButtonStyle))
                 {
                     session.CycleRoadbedProfileFromEditor();
                 }
                 y += 42f;
-                string fit = session.FitEndpointPlanes ? "A/B прилегают к рельефу" : "A/B без прилегания";
+                string fit = EarthWorksLocalization.Text(session.FitEndpointPlanes ? "editor_fit_on" : "editor_fit_off");
                 if (GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 36f), fit + " (Alt)",
                     session.FitEndpointPlanes ? editorButtonActiveStyle : editorButtonStyle))
                 {
@@ -676,11 +676,11 @@ namespace OstrixMods.EarthWorks
         {
             if (session.SelectedPointIndex < 0)
             {
-                EditorText(panel, ref y, "Выбери точку LMB. Перетаскивай её сразу, без второго клика.");
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_select_drag"));
                 return;
             }
-            EditorText(panel, ref y, "Тип кривой");
-            string[] labels = { "X-Spline", "B-Spline", "Безье", "Угол" };
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_curve_type"));
+            string[] labels = { EarthWorksLocalization.Text("control_xspline"), EarthWorksLocalization.Text("control_bspline"), EarthWorksLocalization.Text("control_bezier"), EarthWorksLocalization.Text("control_corner") };
             RouteControlMode[] modes = { RouteControlMode.XSpline, RouteControlMode.BSpline, RouteControlMode.Bezier, RouteControlMode.Corner };
             for (int i = 0; i < labels.Length; ++i)
             {
@@ -691,7 +691,7 @@ namespace OstrixMods.EarthWorks
                 }
             }
             y += 86f;
-            EditorText(panel, ref y, "Сглаживание X-Spline: " + Mathf.RoundToInt(session.SelectedSmoothing * 100f) + "%");
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_smoothing", Mathf.RoundToInt(session.SelectedSmoothing * 100f)));
             float smoothing = GUI.HorizontalSlider(
                 new Rect(panel.x + 18f, y, panel.width - 36f, 24f),
                 session.SelectedSmoothing,
@@ -702,10 +702,10 @@ namespace OstrixMods.EarthWorks
                 session.SetSelectedSmoothing(smoothing);
             }
             y += 32f;
-            EditorText(panel, ref y, "0 Угол     50 Через точку     100 B-Spline");
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_smoothing_legend"));
             if (session.SelectedPointIndex < session.SegmentCount &&
                 GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 38f),
-                    session.SelectedSegmentIsStraight ? "Следующий участок: ПРЯМОЙ" : "Следующий участок: КРИВОЙ",
+                    EarthWorksLocalization.Text(session.SelectedSegmentIsStraight ? "editor_next_straight" : "editor_next_curved"),
                     session.SelectedSegmentIsStraight ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.ToggleSelectedStraightSegment();
@@ -716,14 +716,14 @@ namespace OstrixMods.EarthWorks
         {
             if (session.SelectedPointIndex < 0)
             {
-                EditorText(panel, ref y, "Выбери и тяни флагшток. Ctrl+LMB добавляет новый, Delete удаляет выбранный.");
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_flag_help"));
             }
             else
             {
-                EditorText(panel, ref y, "Локальные параметры находятся рядом с выбранным флагштоком.");
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_local_help"));
             }
-            EditorText(panel, ref y, "Профиль высоты");
-            string[] labels = { "Оптимальный", "Точные флагштоки", "Одна высота", "Уклон A-B" };
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_height_profile"));
+            string[] labels = { EarthWorksLocalization.Text("mode_auto"), EarthWorksLocalization.Text("mode_anchored"), EarthWorksLocalization.Text("mode_single"), EarthWorksLocalization.Text("mode_uniform") };
             RoadElevationMode[] modes =
             {
                 RoadElevationMode.Automatic,
@@ -746,10 +746,8 @@ namespace OstrixMods.EarthWorks
             }
             else
             {
-                EditorText(panel, ref y,
-                    "Высота " + session.SelectedElevation.ToString("F2") + " м" +
-                    " · ширина " + session.LeftWidth.ToString("F2") +
-                    " / " + session.RightWidth.ToString("F2") + " м");
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_point_summary",
+                    session.SelectedElevation, session.LeftWidth, session.RightWidth));
             }
         }
 
@@ -761,19 +759,19 @@ namespace OstrixMods.EarthWorks
             }
             GUI.Box(panel, GUIContent.none, panelStyle);
             GUI.Label(new Rect(panel.x + 10f, panel.y + 5f, panel.width - 20f, 24f),
-                "ТОЧКА " + (session.SelectedPointIndex + 1), editorTitleStyle);
+                EarthWorksLocalization.Text("editor_point", session.SelectedPointIndex + 1), editorTitleStyle);
             float y = panel.y + 31f;
             float buttonWidth = (panel.width - 25f) * 0.5f;
-            if (GUI.Button(new Rect(panel.x + 8f, y, buttonWidth, 32f), "+ точка", editorButtonStyle))
+            if (GUI.Button(new Rect(panel.x + 8f, y, buttonWidth, 32f), EarthWorksLocalization.Text("editor_add_point"), editorButtonStyle))
             {
                 session.InsertAfterSelected();
             }
-            if (GUI.Button(new Rect(panel.x + 13f + buttonWidth, y, buttonWidth, 32f), "Удалить", editorButtonStyle))
+            if (GUI.Button(new Rect(panel.x + 13f + buttonWidth, y, buttonWidth, 32f), EarthWorksLocalization.Text("editor_remove"), editorButtonStyle))
             {
                 session.RemoveSelectedPoint();
             }
             y += 36f;
-            string[] labels = { "X", "B", "Безье", "Угол" };
+            string[] labels = { "X", "B", EarthWorksLocalization.Text("control_bezier"), EarthWorksLocalization.Text("control_corner") };
             RouteControlMode[] modes = { RouteControlMode.XSpline, RouteControlMode.BSpline, RouteControlMode.Bezier, RouteControlMode.Corner };
             float modeWidth = (panel.width - 20f) / 4f;
             for (int i = 0; i < labels.Length; ++i)
@@ -786,18 +784,18 @@ namespace OstrixMods.EarthWorks
             }
             y += 34f;
             if (GUI.Button(new Rect(panel.x + 8f, y, buttonWidth, 32f),
-                session.SelectedElevationAnchored ? "Высота: точно" : "Высота: Auto",
+                EarthWorksLocalization.Text(session.SelectedElevationAnchored ? "editor_height_exact" : "editor_height_auto"),
                 session.SelectedElevationAnchored ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.ToggleSelectedHeightAnchor();
             }
-            if (GUI.Button(new Rect(panel.x + 13f + buttonWidth, y, buttonWidth, 32f), "Точная Y...", editorButtonStyle))
+            if (GUI.Button(new Rect(panel.x + 13f + buttonWidth, y, buttonWidth, 32f), EarthWorksLocalization.Text("editor_exact_y"), editorButtonStyle))
             {
                 session.RequestExactHeightFromEditor();
             }
             y += 35f;
             GUI.Label(new Rect(panel.x + 8f, y, panel.width - 16f, 22f),
-                "Сглаживание X-Spline: " + Mathf.RoundToInt(session.SelectedSmoothing * 100f) + "%",
+                EarthWorksLocalization.Text("editor_smoothing", Mathf.RoundToInt(session.SelectedSmoothing * 100f)),
                 editorMutedStyle);
             y += 20f;
             bool controlsEnabled = GUI.enabled;
@@ -815,14 +813,14 @@ namespace OstrixMods.EarthWorks
             y += 24f;
             if (session.SelectedPointIndex < session.SegmentCount && GUI.Button(
                 new Rect(panel.x + 8f, y, panel.width - 16f, 30f),
-                session.SelectedSegmentIsStraight ? "Следующий участок: ПРЯМОЙ" : "Следующий участок: КРИВОЙ",
+                EarthWorksLocalization.Text(session.SelectedSegmentIsStraight ? "editor_next_straight" : "editor_next_curved"),
                 session.SelectedSegmentIsStraight ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.ToggleSelectedStraightSegment();
             }
             y += 34f;
             GUI.Label(new Rect(panel.x + 8f, y, panel.width - 16f, 31f),
-                "Тяни центр: положение · зелёную: Y (Isometric)\nоранжевые: ширина слева/справа",
+                EarthWorksLocalization.Text("editor_drag_handles"),
                 editorMutedStyle);
         }
 
@@ -849,20 +847,20 @@ namespace OstrixMods.EarthWorks
 
         private void DrawHeightInspector(Rect panel, ref float y)
         {
-            EditorText(panel, ref y, "Режим высоты");
-            EditorModeButton(panel, ref y, "Оптимальный", RoadElevationMode.Automatic);
-            EditorModeButton(panel, ref y, "Точные опорные точки", RoadElevationMode.Anchored);
-            EditorModeButton(panel, ref y, "Одна высота", RoadElevationMode.SingleElevation);
-            EditorModeButton(panel, ref y, "Равномерный уклон A-B", RoadElevationMode.UniformGrade);
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_height_profile"));
+            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_auto"), RoadElevationMode.Automatic);
+            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_anchored"), RoadElevationMode.Anchored);
+            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_single"), RoadElevationMode.SingleElevation);
+            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_uniform"), RoadElevationMode.UniformGrade);
             y += 8f;
-            EditorText(panel, ref y, "Высота: " + session.SelectedElevation.ToString("F2") + " м");
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_height", session.SelectedElevation));
             EditorStepper(panel, ref y, "-1", "-0.25", "+0.25", "+1", session.AdjustHeight);
-            if (GUI.Button(new Rect(panel.x + 14f, y, 130f, 38f), "Точная высота...", editorButtonStyle))
+            if (GUI.Button(new Rect(panel.x + 14f, y, 130f, 38f), EarthWorksLocalization.Text("editor_exact_height"), editorButtonStyle))
             {
                 session.RequestExactHeightFromEditor();
             }
             if (GUI.Button(new Rect(panel.x + 151f, y, 130f, 38f),
-                session.SelectedElevationAnchored ? "Закреплена" : "Закрепить",
+                EarthWorksLocalization.Text(session.SelectedElevationAnchored ? "editor_anchored" : "editor_anchor"),
                 session.SelectedElevationAnchored ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.ToggleSelectedHeightAnchor();
@@ -871,14 +869,14 @@ namespace OstrixMods.EarthWorks
 
         private void DrawWidthInspector(Rect panel, ref float y)
         {
-            EditorText(panel, ref y, session.SelectedPointIndex >= 0 ? "Ширина выбранной точки" : "Ширина всего маршрута");
-            EditorText(panel, ref y, "Слева: " + session.LeftWidth.ToString("F2") + " м");
+            EditorText(panel, ref y, EarthWorksLocalization.Text(session.SelectedPointIndex >= 0 ? "editor_width_point" : "editor_width_route"));
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_left", session.LeftWidth));
             EditorStepper(panel, ref y, "-1", "-0.25", "+0.25", "+1", amount => session.AdjustWidth(amount, 0f));
-            EditorText(panel, ref y, "Справа: " + session.RightWidth.ToString("F2") + " м");
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_right", session.RightWidth));
             EditorStepper(panel, ref y, "-1", "-0.25", "+0.25", "+1", amount => session.AdjustWidth(0f, amount));
             if (session.SelectedPointIndex >= 0 && GUI.Button(
                 new Rect(panel.x + 14f, y, panel.width - 28f, 38f),
-                "Вернуть ширину маршрута",
+                EarthWorksLocalization.Text("editor_reset_width"),
                 editorButtonStyle))
             {
                 session.ResetSelectedWidth();
@@ -887,13 +885,13 @@ namespace OstrixMods.EarthWorks
 
         private void DrawSurfaceInspector(Rect panel, ref float y)
         {
-            EditorText(panel, ref y, session.SelectedSegmentIndex >= 0 ? "Покрытие выбранного участка" : "Покрытие всего маршрута");
-            if (GUI.Button(new Rect(panel.x + 14f, y, 130f, 42f), "Чистая земля",
+            EditorText(panel, ref y, EarthWorksLocalization.Text(session.SelectedSegmentIndex >= 0 ? "editor_surface_segment" : "editor_surface_route"));
+            if (GUI.Button(new Rect(panel.x + 14f, y, 130f, 42f), EarthWorksLocalization.Text("surface_bare"),
                 session.Surface == RoadSurface.Bare ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.SetSurface(RoadSurface.Bare);
             }
-            if (GUI.Button(new Rect(panel.x + 151f, y, 130f, 42f), "Мощение",
+            if (GUI.Button(new Rect(panel.x + 151f, y, 130f, 42f), EarthWorksLocalization.Text("surface_paved"),
                 session.Surface == RoadSurface.Paved ? editorButtonActiveStyle : editorButtonStyle))
             {
                 session.SetSurface(RoadSurface.Paved);
@@ -905,15 +903,12 @@ namespace OstrixMods.EarthWorks
             RoadBuildPlan plan = session.CurrentPlan;
             if (plan == null)
             {
-                EditorText(panel, ref y, "Расчёт ещё не готов.");
+                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_plan_pending"));
                 return;
             }
-            EditorText(panel, ref y, plan.IsValid ? "ПРОЕКТ ГОТОВ К СОЗДАНИЮ" : "ЕСТЬ ОШИБКИ");
-            EditorText(panel, ref y,
-                "Вершин: " + plan.Edits.Count +
-                "\nВыемка: " + plan.CutVolume.ToString("F1") + " м³" +
-                "\nНасыпь: " + plan.FillVolume.ToString("F1") + " м³" +
-                "\nМакс. уклон: " + plan.MaximumGradePercent.ToString("F1") + "%");
+            EditorText(panel, ref y, EarthWorksLocalization.Text(plan.IsValid ? "editor_plan_ready" : "editor_plan_errors"));
+            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_plan_metrics",
+                plan.Edits.Count, plan.CutVolume, plan.FillVolume, plan.MaximumGradePercent));
             if (!plan.IsValid)
             {
                 EditorText(panel, ref y, plan.InvalidReason);
@@ -927,18 +922,18 @@ namespace OstrixMods.EarthWorks
             GUI.Label(new Rect(panel.x + 14f, panel.y + 8f, panel.width - 450f, panel.height - 16f),
                 session.Status + "\n" + session.DetailText,
                 editorLabelStyle);
-            if (GUI.Button(new Rect(panel.xMax - 424f, panel.y + 11f, 130f, panel.height - 22f), "Назад", editorButtonStyle))
+            if (GUI.Button(new Rect(panel.xMax - 424f, panel.y + 11f, 130f, panel.height - 22f), EarthWorksLocalization.Text("editor_back"), editorButtonStyle))
             {
                 session.GoBackFromEditor();
             }
             string next;
             switch (session.State)
             {
-                case RoadDraftState.Drawing: next = "Завершить маршрут (G)"; break;
-                case RoadDraftState.Geometry: next = "К покрытию (G)"; break;
-                case RoadDraftState.Surface: next = "К проверке (G)"; break;
-                case RoadDraftState.Review: next = "Создать проект (G)"; break;
-                default: next = "Продолжить (G)"; break;
+                case RoadDraftState.Drawing: next = EarthWorksLocalization.Text("editor_next_draw"); break;
+                case RoadDraftState.Geometry: next = EarthWorksLocalization.Text("editor_next_surface"); break;
+                case RoadDraftState.Surface: next = EarthWorksLocalization.Text("editor_next_review"); break;
+                case RoadDraftState.Review: next = EarthWorksLocalization.Text("editor_next_create"); break;
+                default: next = EarthWorksLocalization.Text("editor_next_continue"); break;
             }
             bool enabled = GUI.enabled;
             GUI.enabled = session.HasActiveDraft &&
@@ -994,26 +989,26 @@ namespace OstrixMods.EarthWorks
         {
             if (session.SelectedPointIndex >= 0)
             {
-                return "ТОЧКА " + (session.SelectedPointIndex + 1);
+                return EarthWorksLocalization.Text("editor_point", session.SelectedPointIndex + 1);
             }
             if (session.SelectedSegmentIndex >= 0)
             {
-                return "УЧАСТОК " + (session.SelectedSegmentIndex + 1);
+                return EarthWorksLocalization.Text("editor_segment", session.SelectedSegmentIndex + 1);
             }
-            return "Ничего не выбрано";
+            return EarthWorksLocalization.Text("editor_nothing_selected");
         }
 
         private static string EditorStageName(RoadDraftState value)
         {
             switch (value)
             {
-                case RoadDraftState.Drawing: return "1. Маршрут";
-                case RoadDraftState.Geometry: return "2. Редактирование";
-                case RoadDraftState.Height: return "2. Редактирование";
-                case RoadDraftState.Width: return "2. Редактирование";
-                case RoadDraftState.Surface: return "3. Покрытие";
-                case RoadDraftState.Review: return "4. Проверка";
-                default: return "Новый проект";
+                case RoadDraftState.Drawing: return EarthWorksLocalization.Text("editor_stage_route");
+                case RoadDraftState.Geometry: return EarthWorksLocalization.Text("editor_stage_edit");
+                case RoadDraftState.Height: return EarthWorksLocalization.Text("editor_stage_edit");
+                case RoadDraftState.Width: return EarthWorksLocalization.Text("editor_stage_edit");
+                case RoadDraftState.Surface: return EarthWorksLocalization.Text("editor_stage_surface");
+                case RoadDraftState.Review: return EarthWorksLocalization.Text("editor_stage_review");
+                default: return EarthWorksLocalization.Text("editor_stage_new");
             }
         }
 
