@@ -8,9 +8,9 @@
 
 EarthWorks turns Valheim road building into a controlled, persistent project. Players define a route, roadbed shape, elevation, independent left/right width and surface, inspect the exact terrain-grid result, then execute the work through a persistent project board.
 
-Current version: **0.6.4**. Built and statically verified against Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350**, and Jotunn **2.30.0** with the EarthWorks/TerrainTools terrain-operation registration fix.
+Current version: **0.6.5**. Built and statically verified against Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350**, and Jotunn **2.30.0** with the EarthWorks/TerrainTools terrain-operation registration fix.
 
-> 0.6.4 is a verified development build. Valheim was not launched while preparing it; full single-player and multiplayer runtime acceptance remains pending.
+> 0.6.5 is a verified development build. Its paint-grid fixes have automated and static coverage, but their in-game seam/corner, save/reload, and ATMC coexistence checks remain pending.
 
 ## Features available now
 
@@ -47,14 +47,13 @@ Current version: **0.6.4**. Built and statically verified against Valheim **1.0.
 - Editor, camera, validation, board, and terrain-operation messages all use the same localization layer.
 - Translation JSON is embedded in the DLL and can be overridden from `Translations/EarthWorks/<Language>/translations.json`.
 
-## 0.6.4 compatibility and maintainability changes
+## 0.6.5 terrain compatibility changes
 
-- Reverified `Hoverable.GetHoverOffset()`, vanilla `Sign.m_hoverOffset`, Harmony targets, and all direct/reflection contracts used by EarthWorks on Valheim 1.0.12.
-- Built against Jotunn 2.30.0. The isolated test profile retains the local terrain-operation registration fix instead of replacing it with the official binary.
-- Temporarily places the route tool in Jotunn's vanilla `Misc` category because Jotunn 2.30.0 documents custom build categories as not yet updated for Valheim 1.0.
-- Authorizes board-stage RPCs against the actual sending player, including distance and ward permissions.
-- Locks persisted enum IDs, retains v1-v4 project reads, rejects malformed payloads, and tests v4 round-trips.
-- Splits editor, camera, project factory, persistence, and localization responsibilities into named files; adds a solution, contributor setup, architecture guide, and portable CI.
+- Paint writes now use the exact native terrain-grid coordinates stored by the planner; the obsolete half-cell offset is gone.
+- Dirt and paving preserve the existing paint-mask alpha used by special terrain such as lava.
+- All four 65×65 paint-mask corners and zone-border indices have deterministic regression coverage.
+- Grass refresh follows sampled road positions instead of clearing the route's whole bounding circle.
+- The Valheim API audit now locks these contracts alongside the existing `Hoverable`, Harmony, `Heightmap`, and `TerrainComp` checks.
 
 ## Current limits
 
@@ -62,13 +61,14 @@ Current version: **0.6.4**. Built and statically verified against Valheim **1.0.
 - Material, tool, stamina, and build-time economy is incomplete.
 - Full reload/restart, second-client, and long multiplayer-session acceptance is pending.
 - Intersections, road networks, platforms, excavations, and Terrain Edit remain roadmap work.
-- Paint parity with the corrected Valheim 1.0 grid, special-mask alpha, chunk seams/corners, and corridor-only clutter clearing is now an explicit pre-release gate.
+- In-game paint verification at two-zone seams and four-zone corners is pending.
+- Exact paint-core and bilinear-feather visualization is still roadmap work; the current preview remains an approximate surface ribbon.
 - EarthWorks must be installed on the server and every participating client.
 
 ## Installation
 
 1. Install BepInExPack Valheim 5.4.2350 and Jotunn 2.30.0.
-2. Download `EarthWorks-0.6.4.zip` from GitHub Releases.
+2. Download `EarthWorks-0.6.5.zip` from GitHub Releases.
 3. Put `EarthWorks.dll` and `EarthWorks.Geometry.dll` together under `BepInEx/plugins`.
 
 ## Build and verification
@@ -91,7 +91,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Contributing](CONTRIBUTING.md) · [Русский](CONTRIBUTING_RU.md)
 - [Architecture](docs/ARCHITECTURE.md) · [Русский](docs/ARCHITECTURE_RU.md)
 - [Terrain compatibility and tool test plan](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN.md) · [Русский](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN_RU.md)
-- [0.6.4 release notes](docs/RELEASE_0.6.4.md) · [Русский](docs/RELEASE_0.6.4_RU.md)
+- [0.6.5 release notes](docs/RELEASE_0.6.5.md) · [Русский](docs/RELEASE_0.6.5_RU.md)
 
 ## License
 

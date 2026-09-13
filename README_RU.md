@@ -8,9 +8,9 @@
 
 EarthWorks — мод для Valheim, который превращает строительство дорог из серии ручных ударов киркой и мотыгой в управляемый проект. Игрок задаёт маршрут, форму полотна, высоту, ширину и покрытие, проверяет точный preview на реальной Heightmap-сетке Valheim, а затем выполняет работу по этапам через постоянную проектную доску.
 
-Текущая версия — **0.6.4**. Она собрана и статически проверена для Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350** и Jotunn **2.30.0** с нашим исправлением регистрации terrain-операций.
+Текущая версия — **0.6.5**. Она собрана и статически проверена для Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350** и Jotunn **2.30.0** с нашим исправлением регистрации terrain-операций.
 
-> EarthWorks 0.6.4 — проверенная статически и автоматическими тестами development-сборка. Valheim при подготовке не запускался; полный runtime acceptance ещё не завершён.
+> EarthWorks 0.6.5 — проверенная статически и автоматическими тестами development-сборка. Paint-grid исправления ещё нужно проверить в игре на seams/углах, после save/reload и вместе с ATMC.
 
 ## Что уже работает
 
@@ -68,13 +68,14 @@ EarthWorks — мод для Valheim, который превращает стр
 - Экономика материалов, инструментов, выносливости и времени пока не завершена.
 - Не подтверждены полный reload/restart, второй клиент и длительная multiplayer-сессия.
 - Перекрёстки, дорожная сеть, площадки, котлованы и Terrain Edit находятся в следующих этапах.
-- Точная paint-grid parity, сохранение alpha специальных mask-данных, seams/углы chunks и очистка травы только внутри коридора теперь являются обязательным pre-release gate.
+- Запись paint переведена на штатные grid-координаты, alpha специальных mask-данных сохраняется, а очистка травы ограничена коридором; runtime-проверка seams/углов ещё не завершена.
+- Точный preview paint-core и bilinear feather пока не реализован: текущая цветная лента показывает покрытие приблизительно.
 - Мод должен быть установлен на сервере и у каждого участвующего клиента.
 
 ## Установка
 
 1. Установить BepInExPack Valheim 5.4.2350 и Jotunn 2.30.0.
-2. Скачать `EarthWorks-0.6.4.zip` из GitHub Releases.
+2. Скачать `EarthWorks-0.6.5.zip` из GitHub Releases.
 3. Распаковать `EarthWorks.dll` и `EarthWorks.Geometry.dll` в одну папку внутри `BepInEx/plugins`.
 
 ## Сборка и тесты
@@ -89,7 +90,7 @@ dotnet build .\src\EarthWorks\EarthWorks.csproj -c Release `
 dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.csproj -c Release
 ```
 
-Для версии 0.6.4 проходят **24/24** geometry-теста и **5/5** persistence/localization-тестов; API-аудит подтверждает актуальные интерфейсы, Harmony targets и reflection-контракты Valheim 1.0.12.
+Для версии 0.6.5 проходят **26/26** geometry/paint-grid тестов и **5/5** persistence/localization-тестов; API-аудит подтверждает актуальные интерфейсы, Harmony targets и reflection-контракты Valheim 1.0.12.
 
 ## Документация
 
@@ -97,7 +98,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Контракт продукта и границы Road Project 0.1](PROJECT_CONTRACT.md)
 - [Сценарий runtime-проверки](TESTING.md)
 - [История версий](CHANGELOG.md)
-- [Подробности релиза 0.6.4](docs/RELEASE_0.6.4_RU.md)
+- [Подробности релиза 0.6.5](docs/RELEASE_0.6.5_RU.md)
 - [Как предложить изменение](CONTRIBUTING.md)
 - [Архитектура и карта исходников](docs/ARCHITECTURE_RU.md)
 - [Совместимость terrain и план проверки инструментов](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN_RU.md)

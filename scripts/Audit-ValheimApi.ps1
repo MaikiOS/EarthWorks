@@ -81,6 +81,7 @@ try {
 
     Assert-Method 'TerrainComp' 'Save' 'System.Void' @('System.Boolean') | Out-Null
     Assert-Method 'Heightmap' 'GetWorldBaseHeight' 'System.Boolean' @('UnityEngine.Vector3', 'System.Single&') | Out-Null
+    Assert-Method 'Heightmap' 'GetPaintMask' 'UnityEngine.Color' @('System.Int32', 'System.Int32') | Out-Null
     Assert-Method 'Heightmap' 'Poke' 'System.Void' @('System.Int32', 'System.Boolean') | Out-Null
     Assert-Method 'Player' 'Update' 'System.Void' @() | Out-Null
     Assert-Method 'Player' 'TryPlacePiece' 'System.Boolean' @('Piece') | Out-Null
@@ -103,6 +104,23 @@ try {
         throw 'TerrainComp.Save(bool) reflection calls must both pass false.'
     }
     Write-Output 'PASS EarthWorks passes false to both TerrainComp.Save(bool) reflection calls'
+
+    if ($terrainSource.Contains('WorldToVertexMask') -or
+        $terrainSource.Contains('new Vector3(0.5f, 0f, 0.5f)')) {
+        throw 'EarthWorks terrain paint still uses the obsolete half-cell mask offset.'
+    }
+    Write-Output 'PASS EarthWorks paint writes use stored native terrain-grid coordinates'
+
+    if ($terrainSource -notmatch 'paint\.a\s*=\s*batch\.Heightmap\.GetPaintMask\(edit\.GridX, edit\.GridZ\)\.a;') {
+        throw 'EarthWorks terrain paint does not preserve the current special-mask alpha.'
+    }
+    Write-Output 'PASS EarthWorks paint writes preserve special-mask alpha'
+
+    if ($terrainSource.Contains('ResetGrass(record.Center, record.Radius)') -or
+        $terrainSource -notmatch 'ResetGrass\(\s*sample\.Position,') {
+        throw 'EarthWorks clutter reset is not scoped to route preview samples.'
+    }
+    Write-Output 'PASS EarthWorks clutter reset follows the route corridor'
 
     Write-Output 'All EarthWorks Valheim API contracts passed.'
 }

@@ -4,7 +4,7 @@
 
 **Status:** static audit completed September 13, 2026. Runtime proof is still required.
 
-This document compares EarthWorks 0.6.4 with the proven Valheim 1.0 terrain behavior in AdvancedTerrainModifiersCompatible 1.4.8. It records behavior requirements only; GPL implementation code is not copied into EarthWorks.
+This document compares EarthWorks 0.6.5 with the proven Valheim 1.0 terrain behavior in AdvancedTerrainModifiersCompatible 1.4.8. It records behavior requirements only; GPL implementation code is not copied into EarthWorks.
 
 ## Confirmed in EarthWorks now
 
@@ -14,13 +14,13 @@ This document compares EarthWorks 0.6.4 with the proven Valheim 1.0 terrain beha
 - Height and paint arrays, operation count, last-operation point, and radius are snapshotted and restored if a batch fails.
 - Preview and execution consume the same stored road-height plan.
 
-## Gaps that block paint parity
+## 0.6.5 status and remaining paint gates
 
-1. **Paint-grid mapping:** EarthWorks still subtracts `0.5` metres before `WorldToVertexMask`. ATMC 1.4.8 proves that this half-cell offset is obsolete on the current 65×65 paint mask. EarthWorks needs one shared native mapping for writes and preview.
-2. **Special mask channels:** EarthWorks replaces the full paint `Color`. It must preserve the existing alpha value so paved/dirt operations do not damage lava or other special terrain data.
-3. **Chunk seams and corners:** height vertices fan out across neighboring Heightmaps, but paint needs dedicated seam and four-zone-corner tests to prove that the same logical texels are written without widening or gaps.
+1. **Paint-grid mapping — implemented:** writes use the planner's stored native `GridX/GridZ`; the obsolete `WorldToVertexMask` half-cell conversion is gone.
+2. **Special mask channels — implemented:** dirt and paving copy the current `Heightmap.GetPaintMask(x, z).a` into the new color before saving.
+3. **Chunk seams and corners — automated coverage added:** the shared `(width + 1)` index helper covers every 65×65 corner and rejects outside coordinates. Real two-zone and four-zone runtime proof is still required.
 4. **Visible texture footprint:** the current road ribbon does not show the actual paint texel core and bilinear filtering feather. The editor needs separate core/feather visualization based on the same bounds used for writes.
-5. **Clutter scope:** `ResetGrass(record.Center, record.Radius)` clears the route's whole bounding circle. It must be replaced by corridor-scoped clearing before survival acceptance.
+5. **Clutter scope — implemented, runtime tuning pending:** grass refresh now follows stored preview samples with each local side width plus one metre, with a centerline fallback for old records.
 6. **ATMC coexistence:** ATMC globally corrects Heightmap render UVs. EarthWorks must work both with and without that patch and must not apply a competing global correction twice.
 
 ATMC's serialized `TerrainOp.Settings` payload is not required by EarthWorks because EarthWorks persists its own explicit vertex plan. Terrain restoration rules for legacy `TerrainModifier` objects become relevant when EarthWorks gains a Restore tool.

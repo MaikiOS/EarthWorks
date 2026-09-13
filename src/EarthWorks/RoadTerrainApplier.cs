@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
+using OstrixMods.EarthWorks.Geometry;
 using UnityEngine;
 
 namespace OstrixMods.EarthWorks
@@ -86,16 +87,18 @@ namespace OstrixMods.EarthWorks
                 {
                     foreach (RuntimeEdit edit in batch.Edits)
                     {
-                        Vector3 maskPosition = edit.WorldPosition - new Vector3(0.5f, 0f, 0.5f);
-                        batch.Heightmap.WorldToVertexMask(maskPosition, out int x, out int z);
-                        if (x < 0 || z < 0 || x > batch.Width || z > batch.Width)
+                        if (!TerrainGrid.TryGetIndex(
+                                batch.Width,
+                                edit.GridX,
+                                edit.GridZ,
+                                out int index))
                         {
                             continue;
                         }
-                        int index = z * (batch.Width + 1) + x;
                         Color paint = clearing || edit.Surface == RoadSurface.Bare
                             ? Heightmap.m_paintMaskDirt
                             : Heightmap.m_paintMaskPaved;
+                        paint.a = batch.Heightmap.GetPaintMask(edit.GridX, edit.GridZ).a;
                         batch.ModifiedPaint[index] = true;
                         batch.PaintMask[index] = paint;
                     }
@@ -371,9 +374,26 @@ namespace OstrixMods.EarthWorks
 
         private static void ResetClutter(RoadProjectRecord record)
         {
-            if (ClutterSystem.instance)
+            if (!ClutterSystem.instance)
             {
-                ClutterSystem.instance.ResetGrass(record.Center, record.Radius);
+                return;
+            }
+
+            if (record.PreviewSamples.Count > 0)
+            {
+                foreach (RoadPreviewSample sample in record.PreviewSamples)
+                {
+                    ClutterSystem.instance.ResetGrass(
+                        sample.Position,
+                        Mathf.Max(sample.LeftWidth, sample.RightWidth) + 1f);
+                }
+                return;
+            }
+
+            float radius = Mathf.Max(record.DefaultLeftWidth, record.DefaultRightWidth) + 1f;
+            foreach (Vector3 point in record.CenterLine)
+            {
+                ClutterSystem.instance.ResetGrass(point, radius);
             }
         }
 

@@ -3,7 +3,7 @@
 [Русская версия](ROADMAP_RU.md)
 
 **Document status:** September 13, 2026
-**Current development build:** Road Project 0.1 editor, version 0.6.4
+**Current development build:** Road Project 0.1 editor, version 0.6.5
 
 EarthWorks aims to remove repetitive terrain clicks while preserving Valheim survival rules. Players still gather materials, use tools, spend stamina and time, respect wards and server limits, and remain vulnerable while work is performed.
 
@@ -14,14 +14,14 @@ EarthWorks aims to remove repetitive terrain clicks while preserving Valheim sur
 - Bare and paved surface selection per route or segment.
 - Persistent networked project board with six execution stages.
 - English/Russian localization with automated 227-token parity checks and optional external overrides.
-- Guarded development deployment, 24 geometry checks, and 5 persistence/localization checks.
+- Native paint-grid writes with preserved special-mask alpha, corridor-scoped grass refresh, guarded deployment, 26 geometry/paint-grid checks, and 5 persistence/localization checks.
 
 ## Immediate gate — usability and terrain correctness
 
 - Run a guided usability pass over every existing Route action before redesigning the interface.
-- Replace the obsolete paint half-cell offset, preserve special mask alpha, and prove paint writes at zone seams and four-zone corners.
+- Runtime-prove the 0.6.5 native paint-grid and alpha fix at zone seams and four-zone corners.
 - Make paint preview show the same texel core and bilinear feather that execution writes.
-- Restrict clutter clearing to the actual road corridor.
+- Runtime-check the 0.6.5 corridor-scoped clutter refresh on straight, curved, and asymmetric-width roads.
 - Verify EarthWorks both with and without AdvancedTerrainModifiersCompatible 1.4.8.
 
 See the [terrain compatibility and tool test plan](docs/TERRAIN_COMPATIBILITY_AND_TEST_PLAN.md) for the confirmed contracts, current gaps, and evidence format.
@@ -91,6 +91,17 @@ The active [TerrainTools compatibility branch](https://github.com/MaikiOS/Terrai
 - Verify long routes, camera-mod coexistence, and approved terrain-range extensions.
 - Finalize board, stakes, flags, supply storage, effects, migration, and server/client instructions.
 - Publish a clean package without laboratory-only components after runtime acceptance.
+
+## How the community can help
+
+- Run one named case from `TESTING.md` and attach exact versions, steps, screenshot, log, seam/corner location, and reload result.
+- Test dedicated-server and two-client persistence, wards, reconnects, and version mismatches.
+- Review English/Russian wording or contribute a complete translation catalog with matching placeholders.
+- Mark confusing Route controls with short annotated captures before UI redesign begins.
+- Mod authors can document overlapping Harmony targets, terrain limits, camera ownership, piece-table behavior, and persistence contracts.
+- Contributors can submit focused tests, compatibility fixes, documentation, and agreed roadmap work through Issues and Pull Requests under the project license.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for evidence and license requirements.
 
 ## Deferred
 

@@ -34,6 +34,8 @@ namespace OstrixMods.EarthWorks.GeometryTests
             Run("Longitudinal profiles keep exact endpoints", ProfilesKeepExactEndpoints);
             Run("Terrain endpoint plane fit recovers both slopes", EndpointPlaneFitRecoversSlopes);
             Run("Offset joins keep full width through a corner", OffsetJoinsKeepWidth);
+            Run("Terrain paint grid maps zone seams and corners", TerrainPaintGridMapsZoneSeamsAndCorners);
+            Run("Terrain paint grid rejects outside coordinates", TerrainPaintGridRejectsOutsideCoordinates);
 
             if (failures == 0)
             {
@@ -429,6 +431,34 @@ namespace OstrixMods.EarthWorks.GeometryTests
                 3.0);
             Near(-3.0, corner.X);
             Near(3.0, corner.Z);
+        }
+
+        private static void TerrainPaintGridMapsZoneSeamsAndCorners()
+        {
+            const int width = 64;
+            True(TerrainGrid.TryGetIndex(width, width, 17, out int westZoneEastEdge));
+            True(TerrainGrid.TryGetIndex(width, 0, 17, out int eastZoneWestEdge));
+            Equal(1169, westZoneEastEdge);
+            Equal(1105, eastZoneWestEdge);
+
+            True(TerrainGrid.TryGetIndex(width, 0, 0, out int southWest));
+            True(TerrainGrid.TryGetIndex(width, width, 0, out int southEast));
+            True(TerrainGrid.TryGetIndex(width, 0, width, out int northWest));
+            True(TerrainGrid.TryGetIndex(width, width, width, out int northEast));
+            Equal(0, southWest);
+            Equal(64, southEast);
+            Equal(4160, northWest);
+            Equal(4224, northEast);
+        }
+
+        private static void TerrainPaintGridRejectsOutsideCoordinates()
+        {
+            False(TerrainGrid.TryGetIndex(64, -1, 0, out int negative));
+            False(TerrainGrid.TryGetIndex(64, 65, 0, out int east));
+            False(TerrainGrid.TryGetIndex(64, 0, 65, out int north));
+            Equal(-1, negative);
+            Equal(-1, east);
+            Equal(-1, north);
         }
 
         private static RouteControlPoint Point(double x, double z)

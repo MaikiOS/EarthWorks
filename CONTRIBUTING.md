@@ -4,6 +4,17 @@
 
 Pull Requests are welcome for focused bug fixes, Valheim compatibility updates, tests, documentation, localization, and agreed roadmap work. EarthWorks is source-available rather than open source; read [LICENSE.md](LICENSE.md) before reusing or distributing code.
 
+## Where help matters most
+
+- **Players and testers:** reproduce one item from [TESTING.md](TESTING.md), attach the exact input sequence, screenshot, `Player.log`, world location, and whether a Heightmap seam was crossed.
+- **Server owners:** test save/reload, restart, reconnect, ward permissions, version mismatch, and two-client project persistence without using the laboratory shortcuts.
+- **Translators:** improve English or Russian wording, or propose a new complete language catalog with placeholder parity and no untranslated `$earthworks_*` tokens.
+- **UI/UX contributors:** document where the current Route workflow is unclear before proposing a redesign; a short annotated capture is more useful than a speculative replacement UI.
+- **Mod authors:** report Harmony targets, terrain limits, camera ownership, piece-table changes, or saved-terrain behavior that may overlap EarthWorks. Include mod/version, client/server requirements, and the smallest reproducible conflict.
+- **C# contributors:** focused tests, Valheim API compatibility fixes, and agreed roadmap items are welcome. Do not copy GPL or other incompatible source into EarthWorks.
+
+Use a GitHub Issue for findings or proposals and a focused Pull Request for an agreed fix. The best report states what was expected, what happened, exact versions, whether the result survived reload, and what remains unverified.
+
 ## Before editing
 
 1. Read [the architecture map](docs/ARCHITECTURE.md), [product contract](PROJECT_CONTRACT.md), and [test protocol](TESTING.md).

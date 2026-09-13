@@ -4,10 +4,19 @@
 
 ## Unreleased
 
+- No changes yet.
+
+## 0.6.5
+
 - Recorded a successful initial in-game English-localization and Route-tool smoke check; exhaustive per-screen/tool acceptance remains open.
 - Added the ATMC 1.4.8 terrain compatibility audit and runtime evidence plan.
-- Added explicit pre-release gates for native paint-grid mapping, special-mask alpha, Heightmap seams/corners, exact paint preview, and corridor-scoped clutter clearing.
+- Removed the obsolete half-cell paint offset and now writes through the exact native grid coordinates stored by the planner.
+- Preserved the current paint-mask alpha when applying dirt or paving, protecting special terrain data such as lava.
+- Added deterministic paint-grid regression tests for every 65×65 zone corner, border coordinates, and invalid indices; the portable suite is now 26/26.
+- Replaced route-wide bounding-circle grass clearing with sampled corridor-scoped refreshes.
+- Kept exact paint-core/bilinear-feather preview and in-game seam/corner proof as explicit follow-up gates.
 - Added the independently implemented manual-terrain-tool direction with measured 2×2 m and 4×4 m square-footprint candidates and a Level/Paint-first milestone.
+- Expanded the English/Russian contribution guide with concrete testing, localization, compatibility, UX, documentation, and mod-author integration work.
 
 ## 0.6.4
 

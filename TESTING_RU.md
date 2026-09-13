@@ -1,4 +1,4 @@
-# Проверка EarthWorks 0.6.4
+# Проверка EarthWorks 0.6.5
 
 [English (primary)](TESTING.md)
 
@@ -8,7 +8,7 @@ Paint-grid, seams/углы Heightmap, совместная работа с ATMC 
 
 - Только профиль `TerrainRamp-1.0-Test`.
 - Персонаж `Test`, мир `TerrainRamp_Lab`.
-- В `Player.log` ожидаются `EarthWorks 0.6.4 loaded` и строка TestBootstrap.
+- В `Player.log` ожидаются `EarthWorks 0.6.5 loaded` и строка TestBootstrap.
 - Профиль `Default` не использовать.
 
 ## Локализация
