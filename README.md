@@ -8,9 +8,9 @@
 
 EarthWorks turns Valheim road building into a controlled, persistent project. Players define a route, roadbed shape, elevation, independent left/right width and surface, inspect the exact terrain-grid result, then execute the work through a persistent project board.
 
-Current version: **0.6.3**. Built and statically verified against Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350**, and Jotunn **2.30.0** with the EarthWorks/TerrainTools terrain-operation registration fix.
+Current version: **0.6.4**. Built and statically verified against Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350**, and Jotunn **2.30.0** with the EarthWorks/TerrainTools terrain-operation registration fix.
 
-> 0.6.3 is a verified development build. Valheim was not launched while preparing it; full single-player and multiplayer runtime acceptance remains pending.
+> 0.6.4 is a verified development build. Valheim was not launched while preparing it; full single-player and multiplayer runtime acceptance remains pending.
 
 ## Features available now
 
@@ -41,17 +41,20 @@ Current version: **0.6.3**. Built and statically verified against Valheim **1.0.
 
 ### Localization
 
-- Full English and Russian token sets: **252/252**.
+- Full English and Russian token sets: **227/227**.
 - Automated key, placeholder, literal-use, dynamic-state, and dynamic-stage checks.
 - English fallback for unresolved Valheim localization tokens.
 - Editor, camera, validation, board, and terrain-operation messages all use the same localization layer.
+- Translation JSON is embedded in the DLL and can be overridden from `Translations/EarthWorks/<Language>/translations.json`.
 
-## 0.6.3 compatibility changes
+## 0.6.4 compatibility and maintainability changes
 
 - Reverified `Hoverable.GetHoverOffset()`, vanilla `Sign.m_hoverOffset`, Harmony targets, and all direct/reflection contracts used by EarthWorks on Valheim 1.0.12.
 - Built against Jotunn 2.30.0. The isolated test profile retains the local terrain-operation registration fix instead of replacing it with the official binary.
 - Temporarily places the route tool in Jotunn's vanilla `Misc` category because Jotunn 2.30.0 documents custom build categories as not yet updated for Valheim 1.0.
-- Fixed the broken `Drawing → state_draw/controls_draw` mapping and removed Russian-only UI paths.
+- Authorizes board-stage RPCs against the actual sending player, including distance and ward permissions.
+- Locks persisted enum IDs, retains v1-v4 project reads, rejects malformed payloads, and tests v4 round-trips.
+- Splits editor, camera, project factory, persistence, and localization responsibilities into named files; adds a solution, contributor setup, architecture guide, and portable CI.
 
 ## Current limits
 
@@ -64,7 +67,7 @@ Current version: **0.6.3**. Built and statically verified against Valheim **1.0.
 ## Installation
 
 1. Install BepInExPack Valheim 5.4.2350 and Jotunn 2.30.0.
-2. Download `EarthWorks-0.6.3.zip` from GitHub Releases.
+2. Download `EarthWorks-0.6.4.zip` from GitHub Releases.
 3. Put `EarthWorks.dll` and `EarthWorks.Geometry.dll` together under `BepInEx/plugins`.
 
 ## Build and verification
@@ -86,7 +89,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Changelog](CHANGELOG.md) · [Русский](CHANGELOG_RU.md)
 - [Contributing](CONTRIBUTING.md) · [Русский](CONTRIBUTING_RU.md)
 - [Architecture](docs/ARCHITECTURE.md) · [Русский](docs/ARCHITECTURE_RU.md)
-- [0.6.3 release notes](docs/RELEASE_0.6.3.md) · [Русский](docs/RELEASE_0.6.3_RU.md)
+- [0.6.4 release notes](docs/RELEASE_0.6.4.md) · [Русский](docs/RELEASE_0.6.4_RU.md)
 
 ## License
 

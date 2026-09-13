@@ -1,4 +1,4 @@
-# Проверка EarthWorks 0.6.3
+# Проверка EarthWorks 0.6.4
 
 [English (primary)](TESTING.md)
 
@@ -6,12 +6,12 @@
 
 - Только профиль `TerrainRamp-1.0-Test`.
 - Персонаж `Test`, мир `TerrainRamp_Lab`.
-- В `Player.log` ожидаются `EarthWorks 0.6.3 loaded` и строка TestBootstrap.
+- В `Player.log` ожидаются `EarthWorks 0.6.4 loaded` и строка TestBootstrap.
 - Профиль `Default` не использовать.
 
 ## Локализация
 
-1. Запустить `scripts\Audit-Localization.ps1`: все пять проверок должны быть PASS, количество ключей — 252.
+1. Запустить `scripts\Audit-Localization.ps1`: все пять проверок должны быть PASS, количество ключей — 227.
 2. В игре выбрать English и пройти editor, preview, validation error и доску: русского текста быть не должно.
 3. Переключить язык на Russian без перезапуска мира и повторить те же экраны: должны измениться заголовки, controls, Inspector, ошибки, сообщения камеры и этапы доски.
 4. Убедиться, что вместо текста нигде не показаны `$earthworks_*`, `state_drawing` или `controls_drawing`.

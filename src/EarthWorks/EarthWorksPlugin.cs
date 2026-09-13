@@ -21,7 +21,7 @@ namespace OstrixMods.EarthWorks
     {
         public const string PluginGuid = "com.ostrix.earthworks";
         public const string PluginName = "EarthWorks";
-        public const string PluginVersion = "0.6.3";
+        public const string PluginVersion = "0.6.4";
         internal const string RoadPrefabName = "OstrixEarthWorksRoadProjectTool";
         internal const string BoardPrefabName = "OstrixEarthWorksRoadProjectBoard";
 

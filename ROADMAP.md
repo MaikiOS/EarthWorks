@@ -3,7 +3,7 @@
 [Русская версия](ROADMAP_RU.md)
 
 **Document status:** September 13, 2026
-**Current development build:** Road Project 0.1 editor, version 0.6.3
+**Current development build:** Road Project 0.1 editor, version 0.6.4
 
 EarthWorks aims to remove repetitive terrain clicks while preserving Valheim survival rules. Players still gather materials, use tools, spend stamina and time, respect wards and server limits, and remain vulnerable while work is performed.
 
@@ -13,8 +13,8 @@ EarthWorks aims to remove repetitive terrain clicks while preserving Valheim sur
 - Plan/Isometric editor with direct point manipulation, exact and automatic elevations, independent side widths, four longitudinal profiles, endpoint terrain fitting, and exact terrain-grid previews.
 - Bare and paved surface selection per route or segment.
 - Persistent networked project board with six execution stages.
-- English/Russian localization with automated 252-token parity checks.
-- Guarded development deployment and 24 geometry regression checks.
+- English/Russian localization with automated 227-token parity checks and optional external overrides.
+- Guarded development deployment, 24 geometry checks, and 5 persistence/localization checks.
 
 ## Phase 1 — Proven Road Project 0.1
 

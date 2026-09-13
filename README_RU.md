@@ -8,9 +8,9 @@
 
 EarthWorks — мод для Valheim, который превращает строительство дорог из серии ручных ударов киркой и мотыгой в управляемый проект. Игрок задаёт маршрут, форму полотна, высоту, ширину и покрытие, проверяет точный preview на реальной Heightmap-сетке Valheim, а затем выполняет работу по этапам через постоянную проектную доску.
 
-Текущая версия — **0.6.3**. Она собрана и статически проверена для Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350** и Jotunn **2.30.0** с нашим исправлением регистрации terrain-операций.
+Текущая версия — **0.6.4**. Она собрана и статически проверена для Valheim **1.0.12**, Steam build **25253764**, network version **40**, Unity **6000.0.75f1**, BepInExPack Valheim **5.4.2350** и Jotunn **2.30.0** с нашим исправлением регистрации terrain-операций.
 
-> EarthWorks 0.6.3 — проверенная статически и автоматическими тестами development-сборка. Valheim при подготовке не запускался; полный runtime acceptance ещё не завершён.
+> EarthWorks 0.6.4 — проверенная статически и автоматическими тестами development-сборка. Valheim при подготовке не запускался; полный runtime acceptance ещё не завершён.
 
 ## Что уже работает
 
@@ -59,7 +59,8 @@ EarthWorks — мод для Valheim, который превращает стр
 - Шесть стадий: подготовка, разметка, расчистка, земляные работы, покрытие и завершение.
 - Применение высот и paint через штатные `TerrainComp` и `Heightmap` Valheim.
 - Очистка временной разметки после завершения.
-- Английская и русская локализация: 252/252 токена, автоматическая проверка ключей, параметров, динамических состояний и отсутствия смешанного языка.
+- Английская и русская локализация: 227/227 токенов, автоматическая проверка ключей, параметров, динамических состояний и отсутствия смешанного языка.
+- JSON-переводы встроены в DLL и при необходимости переопределяются файлами `Translations/EarthWorks/<Language>/translations.json`.
 
 ## Ограничения текущей версии
 
@@ -72,7 +73,7 @@ EarthWorks — мод для Valheim, который превращает стр
 ## Установка
 
 1. Установить BepInExPack Valheim 5.4.2350 и Jotunn 2.30.0.
-2. Скачать `EarthWorks-0.6.3.zip` из GitHub Releases.
+2. Скачать `EarthWorks-0.6.4.zip` из GitHub Releases.
 3. Распаковать `EarthWorks.dll` и `EarthWorks.Geometry.dll` в одну папку внутри `BepInEx/plugins`.
 
 ## Сборка и тесты
@@ -87,7 +88,7 @@ dotnet build .\src\EarthWorks\EarthWorks.csproj -c Release `
 dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.csproj -c Release
 ```
 
-Для версии 0.6.3 автоматические geometry-тесты проходят **24/24**, а API-аудит подтверждает актуальные интерфейсы, Harmony targets и reflection-контракты Valheim 1.0.12.
+Для версии 0.6.4 проходят **24/24** geometry-теста и **5/5** persistence/localization-тестов; API-аудит подтверждает актуальные интерфейсы, Harmony targets и reflection-контракты Valheim 1.0.12.
 
 ## Документация
 
@@ -95,7 +96,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Контракт продукта и границы Road Project 0.1](PROJECT_CONTRACT.md)
 - [Сценарий runtime-проверки](TESTING.md)
 - [История версий](CHANGELOG.md)
-- [Подробности релиза 0.6.3](docs/RELEASE_0.6.3_RU.md)
+- [Подробности релиза 0.6.4](docs/RELEASE_0.6.4_RU.md)
 - [Как предложить изменение](CONTRIBUTING.md)
 - [Архитектура и карта исходников](docs/ARCHITECTURE_RU.md)
 
