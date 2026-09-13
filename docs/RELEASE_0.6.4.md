@@ -39,7 +39,7 @@ EarthWorks.Geometry.dll  2CDBF136BC9159092FBA1A6AE78F9158A1098BA4D9B4E8E0CA78AA0
 EarthWorks-0.6.4.zip      F002EB6CE72A88C6DAC1EA1A287772438022ADFF377910488114CE3BC4C7446A
 ```
 
-Only `EarthWorks.dll` was installed into the closed-game `TerrainRamp-1.0-Test` profile. Its installed hash matches the release DLL. Twenty-eight protected BepInEx/core, Jotunn, TerrainRamp, BuildWorks, TestBootstrap, and EarthWorks.Geometry files were hash-checked before and after deployment; none changed.
+With Valheim closed, both EarthWorks 0.6.4 DLLs were installed into `TerrainRamp-1.0-Test` after explicit approval to align the complete release pair. Their installed hashes match the release DLLs. Twenty-eight protected BepInEx/core, Jotunn, TerrainRamp, BuildWorks, and TestBootstrap files were hash-checked during each deployment step; none changed.
 
 ## License
 
