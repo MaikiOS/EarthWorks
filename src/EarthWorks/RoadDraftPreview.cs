@@ -103,7 +103,7 @@ namespace OstrixMods.EarthWorks
                 marker.SetPosition(1, point + Vector3.up * 1.2f);
                 Color color = i == selectedPointIndex
                     ? new Color(1f, 0.45f, 0.9f, 1f)
-                    : (state == RoadDraftState.Geometry || state == RoadDraftState.Height) &&
+                    : state == RoadDraftState.Geometry &&
                         displayPoints[i].ElevationAnchored
                         ? new Color(1f, 0.72f, 0.12f, 1f)
                     : i >= committedPointCount
@@ -298,10 +298,6 @@ namespace OstrixMods.EarthWorks
             if (state == RoadDraftState.Surface && sample.SegmentIndex == selectedSegmentIndex)
             {
                 return new Color(1f, 0.28f, 0.78f, 0.52f);
-            }
-            if (state == RoadDraftState.Width)
-            {
-                return new Color(1f, 0.7f, 0.2f, 0.28f);
             }
             return sample.Surface == RoadSurface.Paved
                 ? new Color(0.78f, 0.82f, 0.86f, 0.46f)

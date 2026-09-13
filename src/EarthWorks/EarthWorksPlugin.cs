@@ -638,12 +638,6 @@ namespace OstrixMods.EarthWorks
                 case RoadDraftState.Geometry:
                     DrawCombinedEditorInspector(panel, ref y);
                     break;
-                case RoadDraftState.Height:
-                    DrawHeightInspector(panel, ref y);
-                    break;
-                case RoadDraftState.Width:
-                    DrawWidthInspector(panel, ref y);
-                    break;
                 case RoadDraftState.Surface:
                     DrawSurfaceInspector(panel, ref y);
                     break;
@@ -669,46 +663,6 @@ namespace OstrixMods.EarthWorks
                 {
                     session.ToggleEndpointFit();
                 }
-            }
-        }
-
-        private void DrawGeometryInspector(Rect panel, ref float y)
-        {
-            if (session.SelectedPointIndex < 0)
-            {
-                EditorText(panel, ref y, EarthWorksLocalization.Text("editor_select_drag"));
-                return;
-            }
-            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_curve_type"));
-            string[] labels = { EarthWorksLocalization.Text("control_xspline"), EarthWorksLocalization.Text("control_bspline"), EarthWorksLocalization.Text("control_bezier"), EarthWorksLocalization.Text("control_corner") };
-            RouteControlMode[] modes = { RouteControlMode.XSpline, RouteControlMode.BSpline, RouteControlMode.Bezier, RouteControlMode.Corner };
-            for (int i = 0; i < labels.Length; ++i)
-            {
-                if (GUI.Button(new Rect(panel.x + 14f + (i % 2) * 137f, y + (i / 2) * 40f, 130f, 34f),
-                    labels[i], session.SelectedControlMode == modes[i] ? editorButtonActiveStyle : editorButtonStyle))
-                {
-                    session.SetSelectedControlMode(modes[i]);
-                }
-            }
-            y += 86f;
-            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_smoothing", Mathf.RoundToInt(session.SelectedSmoothing * 100f)));
-            float smoothing = GUI.HorizontalSlider(
-                new Rect(panel.x + 18f, y, panel.width - 36f, 24f),
-                session.SelectedSmoothing,
-                0f,
-                1f);
-            if (Mathf.Abs(smoothing - session.SelectedSmoothing) > 0.001f)
-            {
-                session.SetSelectedSmoothing(smoothing);
-            }
-            y += 32f;
-            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_smoothing_legend"));
-            if (session.SelectedPointIndex < session.SegmentCount &&
-                GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 38f),
-                    EarthWorksLocalization.Text(session.SelectedSegmentIsStraight ? "editor_next_straight" : "editor_next_curved"),
-                    session.SelectedSegmentIsStraight ? editorButtonActiveStyle : editorButtonStyle))
-            {
-                session.ToggleSelectedStraightSegment();
             }
         }
 
@@ -845,28 +799,6 @@ namespace OstrixMods.EarthWorks
             return true;
         }
 
-        private void DrawHeightInspector(Rect panel, ref float y)
-        {
-            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_height_profile"));
-            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_auto"), RoadElevationMode.Automatic);
-            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_anchored"), RoadElevationMode.Anchored);
-            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_single"), RoadElevationMode.SingleElevation);
-            EditorModeButton(panel, ref y, EarthWorksLocalization.Text("mode_uniform"), RoadElevationMode.UniformGrade);
-            y += 8f;
-            EditorText(panel, ref y, EarthWorksLocalization.Text("editor_height", session.SelectedElevation));
-            EditorStepper(panel, ref y, "-1", "-0.25", "+0.25", "+1", session.AdjustHeight);
-            if (GUI.Button(new Rect(panel.x + 14f, y, 130f, 38f), EarthWorksLocalization.Text("editor_exact_height"), editorButtonStyle))
-            {
-                session.RequestExactHeightFromEditor();
-            }
-            if (GUI.Button(new Rect(panel.x + 151f, y, 130f, 38f),
-                EarthWorksLocalization.Text(session.SelectedElevationAnchored ? "editor_anchored" : "editor_anchor"),
-                session.SelectedElevationAnchored ? editorButtonActiveStyle : editorButtonStyle))
-            {
-                session.ToggleSelectedHeightAnchor();
-            }
-        }
-
         private void DrawWidthInspector(Rect panel, ref float y)
         {
             EditorText(panel, ref y, EarthWorksLocalization.Text(session.SelectedPointIndex >= 0 ? "editor_width_point" : "editor_width_route"));
@@ -945,16 +877,6 @@ namespace OstrixMods.EarthWorks
             GUI.enabled = enabled;
         }
 
-        private void EditorModeButton(Rect panel, ref float y, string text, RoadElevationMode mode)
-        {
-            if (GUI.Button(new Rect(panel.x + 14f, y, panel.width - 28f, 34f), text,
-                session.ElevationMode == mode ? editorButtonActiveStyle : editorButtonStyle))
-            {
-                session.SetElevationMode(mode);
-            }
-            y += 38f;
-        }
-
         private void EditorStepper(Rect panel, ref float y, string a, string b, string c, string d, Action<float> action)
         {
             string[] labels = { a, b, c, d };
@@ -1004,8 +926,6 @@ namespace OstrixMods.EarthWorks
             {
                 case RoadDraftState.Drawing: return EarthWorksLocalization.Text("editor_stage_route");
                 case RoadDraftState.Geometry: return EarthWorksLocalization.Text("editor_stage_edit");
-                case RoadDraftState.Height: return EarthWorksLocalization.Text("editor_stage_edit");
-                case RoadDraftState.Width: return EarthWorksLocalization.Text("editor_stage_edit");
                 case RoadDraftState.Surface: return EarthWorksLocalization.Text("editor_stage_surface");
                 case RoadDraftState.Review: return EarthWorksLocalization.Text("editor_stage_review");
                 default: return EarthWorksLocalization.Text("editor_stage_new");

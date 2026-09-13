@@ -59,8 +59,8 @@ foreach ($file in Get-ChildItem -LiteralPath $SourceRoot -Filter '*.cs' -File) {
 }
 
 $requiredDynamicKeys = @(
-    'state_idle', 'state_draw', 'state_geometry', 'state_height', 'state_width', 'state_surface', 'state_review',
-    'controls_idle', 'controls_draw', 'controls_geometry', 'controls_height', 'controls_width', 'controls_surface', 'controls_review',
+    'state_idle', 'state_draw', 'state_geometry', 'state_surface', 'state_review',
+    'controls_idle', 'controls_draw', 'controls_geometry', 'controls_surface', 'controls_review',
     'stage_setup', 'stage_marking', 'stage_clearing', 'stage_earthworks', 'stage_surfacing', 'stage_completion', 'stage_completed'
 )
 foreach ($key in $requiredDynamicKeys) {

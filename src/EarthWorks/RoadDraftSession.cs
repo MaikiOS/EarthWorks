@@ -11,8 +11,6 @@ namespace OstrixMods.EarthWorks
         Idle,
         Drawing,
         Geometry,
-        Height,
-        Width,
         Surface,
         Review
     }
@@ -126,46 +124,6 @@ namespace OstrixMods.EarthWorks
                             : WithRoadbed(EarthWorksLocalization.Text(
                                 "draft_select_flag",
                                 EarthWorksLocalization.ElevationModeName(elevationMode)));
-                    case RoadDraftState.Height:
-                        if (selectedPointIndex >= 0)
-                        {
-                            return WithRoadbed(EarthWorksLocalization.Text(
-                                "height_detail_point",
-                                EarthWorksLocalization.ElevationModeName(elevationMode),
-                                selectedPointIndex + 1,
-                                EarthWorksLocalization.Text(
-                                    points[selectedPointIndex].ElevationAnchored ? "height_locked" : "height_auto"),
-                                SelectedTargetElevation()));
-                        }
-                        if (elevationMode == RoadElevationMode.UniformGrade)
-                        {
-                            return WithRoadbed(EarthWorksLocalization.Text(
-                                "height_detail_uniform",
-                                EarthWorksLocalization.ElevationModeName(elevationMode),
-                                points[0].Elevation,
-                                points[points.Count - 1].Elevation,
-                                currentPlan?.MaximumGradePercent ?? 0f));
-                        }
-                        if (elevationMode == RoadElevationMode.SingleElevation)
-                        {
-                            string source = singleElevationSourceIndex >= 0
-                                ? EarthWorksLocalization.Text("height_source_point", singleElevationSourceIndex + 1)
-                                : EarthWorksLocalization.Text("height_source_manual");
-                            return WithRoadbed(EarthWorksLocalization.Text(
-                                "height_detail_single",
-                                EarthWorksLocalization.ElevationModeName(elevationMode),
-                                singleElevation,
-                                source));
-                        }
-                        return WithRoadbed(EarthWorksLocalization.Text(
-                            "height_detail_mode",
-                            EarthWorksLocalization.ElevationModeName(elevationMode)));
-                    case RoadDraftState.Width:
-                        return WithRoadbed(PlanWarning(EarthWorksLocalization.Text(
-                            "width_detail",
-                            selectedPointIndex >= 0 ? (selectedPointIndex + 1).ToString() : EarthWorksLocalization.Text("whole_route"),
-                            CurrentLeftWidth,
-                            CurrentRightWidth)));
                     case RoadDraftState.Surface:
                         return WithRoadbed(PlanWarning(EarthWorksLocalization.Text(
                             "surface_detail",
@@ -294,24 +252,20 @@ namespace OstrixMods.EarthWorks
             {
                 HandleMiddleClick();
             }
-            if (HasActiveDraft && Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f)
-            {
-                HandleScroll(Mathf.Sign(Input.mouseScrollDelta.y));
-            }
-            if (HasActiveDraft && state == RoadDraftState.Height && Input.GetKeyDown(KeyCode.H))
+            if (HasActiveDraft && state == RoadDraftState.Geometry && Input.GetKeyDown(KeyCode.H))
             {
                 RequestExactHeight();
             }
-            if (HasActiveDraft && state == RoadDraftState.Height && Input.GetKeyDown(KeyCode.F))
+            if (HasActiveDraft && state == RoadDraftState.Geometry && Input.GetKeyDown(KeyCode.F))
             {
                 ToggleHeightAnchor();
             }
-            if (HasActiveDraft && (int)state >= (int)RoadDraftState.Height &&
+            if (HasActiveDraft && (int)state >= (int)RoadDraftState.Geometry &&
                 Input.GetKeyDown(KeyCode.P))
             {
                 CycleLongitudinalProfile();
             }
-            if (HasActiveDraft && (int)state >= (int)RoadDraftState.Height &&
+            if (HasActiveDraft && (int)state >= (int)RoadDraftState.Geometry &&
                 (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt)))
             {
                 fitEndpointPlanes = !fitEndpointPlanes;
@@ -333,26 +287,6 @@ namespace OstrixMods.EarthWorks
             {
                 case RoadDraftState.Geometry:
                     HandleGeometryPlacement(snapped);
-                    return false;
-                case RoadDraftState.Height:
-                    selectedPointIndex = FindClosestPoint(snapped, 1.4f);
-                    if (selectedPointIndex >= 0)
-                    {
-                        status = EarthWorksLocalization.Text(
-                            "height_point_selected",
-                            selectedPointIndex + 1,
-                            EarthWorksLocalization.Text(
-                                points[selectedPointIndex].ElevationAnchored ? "height_locked" : "height_auto"));
-                        statusHoldUntil = Time.time + 2f;
-                    }
-                    else
-                    {
-                        HoldStatus("height_selection_cleared");
-                    }
-                    return false;
-                case RoadDraftState.Width:
-                    selectedPointIndex = FindClosestPoint(snapped, 1.4f);
-                    HoldStatus(selectedPointIndex >= 0 ? "width_point_selected" : "width_default_selected");
                     return false;
                 case RoadDraftState.Surface:
                     selectedSegmentIndex = FindClosestSegment(snapped, 1.8f);
@@ -421,13 +355,11 @@ namespace OstrixMods.EarthWorks
             {
                 RemoveSelectedPoint();
             }
-            if ((state == RoadDraftState.Geometry || state == RoadDraftState.Height) &&
-                Input.GetKeyDown(KeyCode.H))
+            if (state == RoadDraftState.Geometry && Input.GetKeyDown(KeyCode.H))
             {
                 RequestExactHeight();
             }
-            if ((state == RoadDraftState.Geometry || state == RoadDraftState.Height) &&
-                Input.GetKeyDown(KeyCode.F))
+            if (state == RoadDraftState.Geometry && Input.GetKeyDown(KeyCode.F))
             {
                 ToggleHeightAnchor();
             }
@@ -459,30 +391,6 @@ namespace OstrixMods.EarthWorks
                 (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
             {
                 InsertPoint(snapped);
-                return;
-            }
-            if (state == RoadDraftState.Height)
-            {
-                selectedPointIndex = FindClosestPoint(snapped, selectionRadius);
-                if (selectedPointIndex >= 0)
-                {
-                    status = EarthWorksLocalization.Text(
-                        "height_point_selected",
-                        selectedPointIndex + 1,
-                        EarthWorksLocalization.Text(
-                            points[selectedPointIndex].ElevationAnchored ? "height_locked" : "height_auto"));
-                    statusHoldUntil = Time.time + 2f;
-                }
-                else
-                {
-                    HoldStatus("height_selection_cleared");
-                }
-                return;
-            }
-            if (state == RoadDraftState.Width)
-            {
-                selectedPointIndex = FindClosestPoint(snapped, selectionRadius);
-                HoldStatus(selectedPointIndex >= 0 ? "width_point_selected" : "width_default_selected");
                 return;
             }
             if (state == RoadDraftState.Surface)
@@ -626,8 +534,6 @@ namespace OstrixMods.EarthWorks
             switch (state)
             {
                 case RoadDraftState.Geometry: state = RoadDraftState.Drawing; break;
-                case RoadDraftState.Height: state = RoadDraftState.Geometry; break;
-                case RoadDraftState.Width: state = RoadDraftState.Height; break;
                 case RoadDraftState.Surface: state = RoadDraftState.Geometry; break;
                 case RoadDraftState.Review:
                     state = RoadDraftState.Surface;
@@ -956,17 +862,6 @@ namespace OstrixMods.EarthWorks
                     currentPlan = null;
                     HoldStatus("stage_surface");
                     break;
-                case RoadDraftState.Height:
-                    state = RoadDraftState.Width;
-                    selectedPointIndex = -1;
-                    HoldStatus("stage_width");
-                    break;
-                case RoadDraftState.Width:
-                    state = RoadDraftState.Surface;
-                    selectedPointIndex = -1;
-                    selectedSegmentIndex = -1;
-                    HoldStatus("stage_surface");
-                    break;
                 case RoadDraftState.Surface:
                     BuildReview();
                     break;
@@ -1069,48 +964,6 @@ namespace OstrixMods.EarthWorks
                 {
                     state = RoadDraftState.Drawing;
                     HoldStatus("drawing_resumed");
-                }
-                return;
-            }
-            if (state == RoadDraftState.Height)
-            {
-                if (selectedPointIndex >= 0 && points[selectedPointIndex].ElevationAnchored)
-                {
-                    RoadDraftPoint point = points[selectedPointIndex];
-                    point.ElevationAnchored = false;
-                    if (RoadTerrain.TryGetHeight(point.Position, out float ground))
-                    {
-                        point.Position.y = ground;
-                        point.Elevation = ground;
-                    }
-                    selectedPointIndex = -1;
-                    currentPlan = null;
-                    HoldStatus("height_reset_auto");
-                }
-                else
-                {
-                    selectedPointIndex = -1;
-                    state = RoadDraftState.Geometry;
-                    HoldStatus("stage_geometry");
-                }
-                return;
-            }
-            if (state == RoadDraftState.Width)
-            {
-                if (selectedPointIndex >= 0 &&
-                    (points[selectedPointIndex].LeftWidth > 0f || points[selectedPointIndex].RightWidth > 0f))
-                {
-                    points[selectedPointIndex].LeftWidth = -1f;
-                    points[selectedPointIndex].RightWidth = -1f;
-                    selectedPointIndex = -1;
-                    currentPlan = null;
-                    HoldStatus("width_reset_default");
-                }
-                else
-                {
-                    selectedPointIndex = -1;
-                    state = RoadDraftState.Height;
-                    HoldStatus("stage_height");
                 }
                 return;
             }
@@ -1244,95 +1097,10 @@ namespace OstrixMods.EarthWorks
                 CyclePointMode(pointIndex);
                 return;
             }
-            if (state == RoadDraftState.Height)
-            {
-                elevationMode = (RoadElevationMode)(((int)elevationMode + 1) % 4);
-                if (elevationMode == RoadElevationMode.SingleElevation)
-                {
-                    singleElevationSourceIndex = selectedPointIndex >= 0 ? selectedPointIndex : 0;
-                    singleElevation = points[singleElevationSourceIndex].Elevation;
-                }
-                currentPlan = null;
-                HoldStatus("height_mode_changed");
-                return;
-            }
             if (state == RoadDraftState.Surface)
             {
                 CycleSurface();
             }
-        }
-
-        private void HandleScroll(float direction)
-        {
-            if (state == RoadDraftState.Height)
-            {
-                float step = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)
-                    ? 1f
-                    : 0.25f;
-                if (elevationMode == RoadElevationMode.SingleElevation)
-                {
-                    singleElevation += direction * step;
-                    singleElevationSourceIndex = -1;
-                    HoldStatus("height_changed");
-                }
-                else if (selectedPointIndex >= 0)
-                {
-                    RoadDraftPoint point = points[selectedPointIndex];
-                    point.ElevationAnchored = true;
-                    point.Elevation += direction * step;
-                    point.Position.y = point.Elevation;
-                    if (elevationMode == RoadElevationMode.UniformGrade &&
-                        selectedPointIndex > 0 && selectedPointIndex < points.Count - 1)
-                    {
-                        elevationMode = RoadElevationMode.Anchored;
-                    }
-                    HoldStatus("height_changed");
-                }
-                else
-                {
-                    HoldStatus("height_select_first");
-                }
-                currentPlan = null;
-                return;
-            }
-            if (state != RoadDraftState.Width)
-            {
-                return;
-            }
-
-            bool leftOnly = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-            bool rightOnly = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-            float amount = direction * 0.25f;
-            if (selectedPointIndex >= 0)
-            {
-                RoadDraftPoint point = points[selectedPointIndex];
-                if (point.LeftWidth <= 0f)
-                {
-                    point.LeftWidth = defaultLeftWidth;
-                    point.RightWidth = defaultRightWidth;
-                }
-                if (!rightOnly)
-                {
-                    point.LeftWidth = Mathf.Clamp(point.LeftWidth + amount, 1f, 10f);
-                }
-                if (!leftOnly)
-                {
-                    point.RightWidth = Mathf.Clamp(point.RightWidth + amount, 1f, 10f);
-                }
-            }
-            else
-            {
-                if (!rightOnly)
-                {
-                    defaultLeftWidth = Mathf.Clamp(defaultLeftWidth + amount, 1f, 10f);
-                }
-                if (!leftOnly)
-                {
-                    defaultRightWidth = Mathf.Clamp(defaultRightWidth + amount, 1f, 10f);
-                }
-            }
-            currentPlan = null;
-            HoldStatus("width_changed");
         }
 
         private void RequestExactHeight()
@@ -1815,10 +1583,6 @@ namespace OstrixMods.EarthWorks
                     return "draw_route";
                 case RoadDraftState.Geometry:
                     return selectionKind == RoadSelectionKind.None ? "geometry_help" : "geometry_place";
-                case RoadDraftState.Height:
-                    return "height_help";
-                case RoadDraftState.Width:
-                    return "width_help";
                 case RoadDraftState.Surface:
                     return "surface_help";
                 default:
