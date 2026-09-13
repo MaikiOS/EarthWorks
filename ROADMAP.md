@@ -2,7 +2,7 @@
 
 [Русская версия](ROADMAP_RU.md)
 
-**Document status:** September 13, 2026  
+**Document status:** September 13, 2026
 **Current development build:** Road Project 0.1 editor, version 0.6.3
 
 EarthWorks aims to remove repetitive terrain clicks while preserving Valheim survival rules. Players still gather materials, use tools, spend stamina and time, respect wards and server limits, and remain vulnerable while work is performed.
