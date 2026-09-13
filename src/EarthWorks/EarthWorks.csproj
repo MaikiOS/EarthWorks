@@ -11,7 +11,9 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>$(MSBuildThisFileDirectory)..\..\artifacts\bin\</OutputPath>
-    <ProfileRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\'))</ProfileRoot>
+    <ProfileRoot Condition="'$(ProfileRoot)' == '' and '$(EARTHWORKS_PROFILE_ROOT)' != ''">$(EARTHWORKS_PROFILE_ROOT)</ProfileRoot>
+    <ProfileRoot Condition="'$(ProfileRoot)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\'))</ProfileRoot>
+    <ValheimManagedDir Condition="'$(ValheimManagedDir)' == '' and '$(VALHEIM_MANAGED_DIR)' != ''">$(VALHEIM_MANAGED_DIR)</ValheimManagedDir>
     <ValheimManagedDir Condition="'$(ValheimManagedDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</ValheimManagedDir>
   </PropertyGroup>
 
@@ -21,15 +23,15 @@
 
   <ItemGroup>
     <Reference Include="BepInEx">
-      <HintPath>$(ProfileRoot)BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath>$(ProfileRoot)\BepInEx\core\BepInEx.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>$(ProfileRoot)BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>$(ProfileRoot)\BepInEx\core\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Jotunn">
-      <HintPath>$(ProfileRoot)BepInEx\plugins\ValheimModding-Jotunn\Jotunn.dll</HintPath>
+      <HintPath>$(ProfileRoot)\BepInEx\plugins\ValheimModding-Jotunn\Jotunn.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="assembly_valheim">
@@ -72,9 +74,21 @@
       <HintPath>$(ValheimManagedDir)\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <HintPath>$(ValheimManagedDir)\System.Runtime.Serialization.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\earthworks-road-icon.png" LogicalName="OstrixMods.EarthWorks.Resources.earthworks-road-icon.png" />
+    <EmbeddedResource Include="..\..\Translations\EarthWorks\English\translations.json" LogicalName="OstrixMods.EarthWorks.Translations.English.translations.json" />
+    <EmbeddedResource Include="..\..\Translations\EarthWorks\Russian\translations.json" LogicalName="OstrixMods.EarthWorks.Translations.Russian.translations.json" />
   </ItemGroup>
+
+  <Target Name="ValidateLocalGameReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(ProfileRoot)\BepInEx\core\BepInEx.dll')" Text="BepInEx.dll was not found. Set ProfileRoot or EARTHWORKS_PROFILE_ROOT; see CONTRIBUTING.md." />
+    <Error Condition="!Exists('$(ProfileRoot)\BepInEx\plugins\ValheimModding-Jotunn\Jotunn.dll')" Text="Jotunn.dll was not found. Set ProfileRoot or EARTHWORKS_PROFILE_ROOT; see CONTRIBUTING.md." />
+    <Error Condition="!Exists('$(ValheimManagedDir)\assembly_valheim.dll')" Text="assembly_valheim.dll was not found. Set ValheimManagedDir or VALHEIM_MANAGED_DIR; see CONTRIBUTING.md." />
+  </Target>
 </Project>

@@ -35,9 +35,15 @@ namespace OstrixMods.EarthWorks
                             wrapMode = TextureWrapMode.Clamp,
                             hideFlags = HideFlags.HideAndDontSave
                         };
-                        Type imageConversion = Type.GetType(
-                            "UnityEngine.ImageConversion, UnityEngine.ImageConversionModule",
-                            true);
+                        Type imageConversion = FindImageConversionType();
+                        if (imageConversion == null)
+                        {
+                            EarthWorksPlugin.Log.LogError(
+                                "UnityEngine.ImageConversion is unavailable.");
+                            UnityEngine.Object.Destroy(texture);
+                            texture = null;
+                            return null;
+                        }
                         MethodInfo loadImage = imageConversion.GetMethod(
                             "LoadImage",
                             BindingFlags.Public | BindingFlags.Static,
@@ -76,6 +82,26 @@ namespace OstrixMods.EarthWorks
                 }
                 return null;
             }
+        }
+
+        private static Type FindImageConversionType()
+        {
+            Type result = Type.GetType(
+                "UnityEngine.ImageConversion, UnityEngine.ImageConversionModule",
+                false);
+            if (result != null)
+            {
+                return result;
+            }
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                result = assembly.GetType("UnityEngine.ImageConversion", false);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+            return null;
         }
     }
 }

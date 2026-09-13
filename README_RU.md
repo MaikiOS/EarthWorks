@@ -97,6 +97,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [История версий](CHANGELOG.md)
 - [Подробности релиза 0.6.3](docs/RELEASE_0.6.3_RU.md)
 - [Как предложить изменение](CONTRIBUTING.md)
+- [Архитектура и карта исходников](docs/ARCHITECTURE_RU.md)
 
 ## License
 

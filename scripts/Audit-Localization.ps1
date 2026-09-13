@@ -1,30 +1,27 @@
 [CmdletBinding()]
 param(
-    [string] $LocalizationPath = (Join-Path $PSScriptRoot '..\src\EarthWorks\EarthWorksLocalization.cs'),
+    [string] $TranslationRoot = (Join-Path $PSScriptRoot '..\Translations\EarthWorks'),
     [string] $SourceRoot = (Join-Path $PSScriptRoot '..\src\EarthWorks')
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$source = Get-Content -LiteralPath $LocalizationPath -Raw
-$dictionaryPattern = '(?s)Dictionary<string, string>\s+(?<name>English|Russian).*?=\s*new Dictionary<string, string>\s*\{(?<body>.*?)\n\s*\};'
-$entryPattern = '\{\s*"(?<key>[^"]+)"\s*,\s*"(?<value>(?:\\.|[^"])*)"\s*\}'
 $dictionaries = @{}
-
-foreach ($match in [regex]::Matches($source, $dictionaryPattern)) {
-    $entries = @{}
-    foreach ($entry in [regex]::Matches($match.Groups['body'].Value, $entryPattern)) {
-        $key = $entry.Groups['key'].Value
-        if ($entries.ContainsKey($key)) { throw "Duplicate $($match.Groups['name'].Value) token: $key" }
-        $entries[$key] = $entry.Groups['value'].Value
-    }
-    $dictionaries[$match.Groups['name'].Value] = $entries
-}
-
 foreach ($language in 'English', 'Russian') {
-    if (-not $dictionaries.ContainsKey($language) -or $dictionaries[$language].Count -eq 0) {
-        throw "Unable to parse the $language localization dictionary."
+    $path = Join-Path $TranslationRoot "$language\translations.json"
+    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
+        throw "Missing $language translations: $path"
+    }
+    try {
+        $dictionaries[$language] = Get-Content -LiteralPath $path -Raw |
+            ConvertFrom-Json -AsHashtable
+    }
+    catch {
+        throw "Unable to parse $language translations: $($_.Exception.Message)"
+    }
+    if ($dictionaries[$language].Count -eq 0) {
+        throw "$language translations are empty."
     }
 }
 
@@ -53,8 +50,8 @@ foreach ($file in Get-ChildItem -LiteralPath $SourceRoot -Filter '*.cs' -File) {
         }
     }
 
-    if ($file.FullName -ne ([IO.Path]::GetFullPath($LocalizationPath)) -and $fileSource -match '[А-Яа-яЁё]') {
-        throw "Cyrillic user-facing text remains outside EarthWorksLocalization.cs: $($file.Name)"
+    if ($fileSource -match '[А-Яа-яЁё]') {
+        throw "Cyrillic user-facing text remains in source code: $($file.Name)"
     }
 }
 
@@ -71,4 +68,4 @@ Write-Output "PASS English/Russian key parity: $($englishKeys.Count) tokens"
 Write-Output 'PASS English/Russian placeholder parity'
 Write-Output 'PASS literal token references'
 Write-Output 'PASS dynamic state and stage tokens'
-Write-Output 'PASS no Cyrillic text outside EarthWorksLocalization.cs'
+Write-Output 'PASS no Cyrillic text in C# source files'

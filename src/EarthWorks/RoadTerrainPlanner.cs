@@ -24,7 +24,7 @@ namespace OstrixMods.EarthWorks
             float defaultRightWidth,
             RoadSurface defaultSurface,
             IReadOnlyList<int> segmentSurfaceOverrides,
-            int subdivisionsPerSegment,
+            RoadBuildSettings settings,
             bool includeTerrainEdits = true)
         {
             RoadBuildPlan plan = new RoadBuildPlan();
@@ -45,29 +45,15 @@ namespace OstrixMods.EarthWorks
                 return Invalidate(plan, EarthWorksLocalization.Text("plan_geometry_invalid"));
             }
 
-            int subdivisions = Mathf.Max(2, subdivisionsPerSegment);
+            int subdivisions = Mathf.Max(2, settings.SubdivisionsPerSegment);
             IReadOnlyList<RouteSample> routeSamples = RouteEvaluator.Sample(route, subdivisions);
-            List<ElevationStation> elevationStations = new List<ElevationStation>(routeSamples.Count);
-            for (int i = 0; i < routeSamples.Count; ++i)
+            List<ElevationStation> elevationStations = CreateElevationStations(
+                points,
+                routeSamples,
+                plan);
+            if (elevationStations == null)
             {
-                RouteSample sample = routeSamples[i];
-                Vector3 probe = new Vector3((float)sample.Position.X, 0f, (float)sample.Position.Z);
-                if (!FootprintLoaded(probe) || !RoadTerrain.TryGetHeight(probe, out float ground))
-                {
-                    return Invalidate(plan, EarthWorksLocalization.Text("plan_loaded_required"));
-                }
-                if (ZoneSystem.instance && ground < ZoneSystem.instance.m_waterLevel - 0.05f)
-                {
-                    return Invalidate(plan, EarthWorksLocalization.Text("plan_water_unsupported"));
-                }
-
-                double? fixedElevation = null;
-                int controlPointIndex = ControlPointAtSample(sample, i, routeSamples.Count, points.Count);
-                if (controlPointIndex >= 0 && points[controlPointIndex].ElevationAnchored)
-                {
-                    fixedElevation = points[controlPointIndex].Elevation;
-                }
-                elevationStations.Add(new ElevationStation(sample.Distance, ground, fixedElevation));
+                return plan;
             }
 
             ElevationSolution elevation;
@@ -76,7 +62,7 @@ namespace OstrixMods.EarthWorks
                 elevation = ElevationSolver.SolveSingleElevation(
                     elevationStations,
                     singleElevation,
-                    EarthWorksPlugin.EffectiveTerrainDelta);
+                    settings.TerrainDelta);
             }
             else if (elevationMode == RoadElevationMode.UniformGrade)
             {
@@ -84,15 +70,15 @@ namespace OstrixMods.EarthWorks
                     elevationStations,
                     points[0].Elevation,
                     points[points.Count - 1].Elevation,
-                    EarthWorksPlugin.EffectiveTerrainDelta,
-                    EarthWorksPlugin.EffectiveMaximumGradeRatio);
+                    settings.TerrainDelta,
+                    settings.MaximumGradeRatio);
             }
             else
             {
                 elevation = ElevationSolver.SolveOptimized(
                     elevationStations,
-                    EarthWorksPlugin.EffectiveTerrainDelta,
-                    EarthWorksPlugin.EffectiveMaximumGradeRatio);
+                    settings.TerrainDelta,
+                    settings.MaximumGradeRatio);
             }
             if (!elevation.IsValid)
             {
@@ -109,11 +95,11 @@ namespace OstrixMods.EarthWorks
                 elevations,
                 subdivisions,
                 longitudinalProfile,
-                EarthWorksPlugin.EffectiveShoulderWidth);
+                settings.ShoulderWidth);
 
             RoadEndpointPlane startPlane = default(RoadEndpointPlane);
             RoadEndpointPlane endPlane = default(RoadEndpointPlane);
-            float endpointTransition = Mathf.Max(2f, EarthWorksPlugin.EffectiveShoulderWidth);
+            float endpointTransition = Mathf.Max(2f, settings.ShoulderWidth);
             if (fitEndpointPlanes)
             {
                 Vector2 startAxis = new Vector2(
@@ -163,7 +149,7 @@ namespace OstrixMods.EarthWorks
             }
 
             double maximumGradeRatio = CalculateMaximumGrade(routeSamples, elevations);
-            if (maximumGradeRatio > EarthWorksPlugin.EffectiveMaximumGradeRatio + 0.0001)
+            if (maximumGradeRatio > settings.MaximumGradeRatio + 0.0001)
             {
                 return Invalidate(
                     plan,
@@ -230,14 +216,19 @@ namespace OstrixMods.EarthWorks
 
             float endBlendLength = fitEndpointPlanes ||
                 longitudinalProfile != RoadLongitudinalProfile.Linear
-                    ? Mathf.Max(2f, EarthWorksPlugin.EffectiveShoulderWidth)
+                    ? Mathf.Max(2f, settings.ShoulderWidth)
                     : 0f;
-            if (!ValidateLoadedCorridor(center, endBlendLength))
+            if (!ValidateLoadedCorridor(center, endBlendLength, settings.ShoulderWidth))
             {
                 return Invalidate(plan, EarthWorksLocalization.Text("plan_loaded_required"));
             }
 
-            CalculateBounds(center, endBlendLength, out Vector3 planCenter, out float radius);
+            CalculateBounds(
+                center,
+                endBlendLength,
+                settings.ShoulderWidth,
+                out Vector3 planCenter,
+                out float radius);
             plan.Center = planCenter;
             plan.Radius = radius;
             plan.Length = routeSamples[routeSamples.Count - 1].Distance;
@@ -248,6 +239,66 @@ namespace OstrixMods.EarthWorks
                 return plan;
             }
 
+            PopulateTerrainEdits(center, endBlendLength, settings, planCenter, radius, plan);
+            if (plan.Edits.Count == 0 || plan.Edits.Count > settings.MaximumVertices)
+            {
+                return plan;
+            }
+
+            plan.Record = BuildRecord(
+                points,
+                straightSegments,
+                elevationMode,
+                longitudinalProfile,
+                fitEndpointPlanes,
+                singleElevation,
+                defaultLeftWidth,
+                defaultRightWidth,
+                defaultSurface,
+                plan);
+            return plan;
+        }
+
+        private static List<ElevationStation> CreateElevationStations(
+            IReadOnlyList<RoadDraftPoint> points,
+            IReadOnlyList<RouteSample> routeSamples,
+            RoadBuildPlan plan)
+        {
+            List<ElevationStation> stations = new List<ElevationStation>(routeSamples.Count);
+            for (int i = 0; i < routeSamples.Count; ++i)
+            {
+                RouteSample sample = routeSamples[i];
+                Vector3 probe = new Vector3((float)sample.Position.X, 0f, (float)sample.Position.Z);
+                if (!FootprintLoaded(probe) || !RoadTerrain.TryGetHeight(probe, out float ground))
+                {
+                    Invalidate(plan, EarthWorksLocalization.Text("plan_loaded_required"));
+                    return null;
+                }
+                if (ZoneSystem.instance && ground < ZoneSystem.instance.m_waterLevel - 0.05f)
+                {
+                    Invalidate(plan, EarthWorksLocalization.Text("plan_water_unsupported"));
+                    return null;
+                }
+
+                double? fixedElevation = null;
+                int pointIndex = ControlPointAtSample(sample, i, routeSamples.Count, points.Count);
+                if (pointIndex >= 0 && points[pointIndex].ElevationAnchored)
+                {
+                    fixedElevation = points[pointIndex].Elevation;
+                }
+                stations.Add(new ElevationStation(sample.Distance, ground, fixedElevation));
+            }
+            return stations;
+        }
+
+        private static void PopulateTerrainEdits(
+            IReadOnlyList<CenterSample> center,
+            float endBlendLength,
+            RoadBuildSettings settings,
+            Vector3 planCenter,
+            float radius,
+            RoadBuildPlan plan)
+        {
             Dictionary<WorldVertexKey, SharedTarget> sharedTargets =
                 new Dictionary<WorldVertexKey, SharedTarget>();
             foreach (Heightmap heightmap in Heightmap.GetAllHeightmaps())
@@ -262,7 +313,12 @@ namespace OstrixMods.EarthWorks
                     for (int x = 0; x <= heightmap.m_width; ++x)
                     {
                         Vector3 vertex = RoadTerrain.GetWorldVertex(heightmap, x, z);
-                        if (!TryEvaluate(center, vertex, endBlendLength, out CorridorSample corridor))
+                        if (!TryEvaluate(
+                                center,
+                                vertex,
+                                endBlendLength,
+                                settings.ShoulderWidth,
+                                out CorridorSample corridor))
                         {
                             continue;
                         }
@@ -283,11 +339,10 @@ namespace OstrixMods.EarthWorks
 
                         if (TryGetWorldBaseHeight(heightmap, vertex, out float baseHeight) &&
                             Mathf.Abs(shared.TargetHeight - baseHeight) >
-                            EarthWorksPlugin.EffectiveTerrainDelta - DeltaSafetyMargin)
+                            settings.TerrainDelta - DeltaSafetyMargin)
                         {
                             Invalidate(plan, EarthWorksLocalization.Text("plan_height_limit"));
                         }
-
                         if (!PrivateArea.CheckAccess(vertex, 0f, false, false))
                         {
                             Invalidate(plan, EarthWorksLocalization.Text("plan_private_area"));
@@ -320,35 +375,22 @@ namespace OstrixMods.EarthWorks
                             plan.FillVolume += volume;
                         }
 
-                        if (plan.Edits.Count > EarthWorksPlugin.EffectiveMaximumVertices)
+                        if (plan.Edits.Count > settings.MaximumVertices)
                         {
-                            return Invalidate(
+                            Invalidate(
                                 plan,
                                 EarthWorksLocalization.Text(
                                     "plan_vertex_limit",
-                                    EarthWorksPlugin.EffectiveMaximumVertices));
+                                    settings.MaximumVertices));
+                            return;
                         }
                     }
                 }
             }
-
             if (plan.Edits.Count == 0)
             {
-                return Invalidate(plan, EarthWorksLocalization.Text("plan_no_vertices"));
+                Invalidate(plan, EarthWorksLocalization.Text("plan_no_vertices"));
             }
-
-            plan.Record = BuildRecord(
-                points,
-                straightSegments,
-                elevationMode,
-                longitudinalProfile,
-                fitEndpointPlanes,
-                singleElevation,
-                defaultLeftWidth,
-                defaultRightWidth,
-                defaultSurface,
-                plan);
-            return plan;
         }
 
         internal static RoadRoute BuildRoute(
@@ -421,9 +463,9 @@ namespace OstrixMods.EarthWorks
 
         private static bool ValidateLoadedCorridor(
             IReadOnlyList<CenterSample> center,
-            float endBlendLength)
+            float endBlendLength,
+            float shoulder)
         {
-            float shoulder = EarthWorksPlugin.EffectiveShoulderWidth;
             for (int i = 0; i < center.Count; ++i)
             {
                 Vector3 direction = i + 1 < center.Count
@@ -513,6 +555,7 @@ namespace OstrixMods.EarthWorks
             IReadOnlyList<CenterSample> center,
             Vector3 point,
             float endBlendLength,
+            float shoulder,
             out CorridorSample result)
         {
             result = default(CorridorSample);
@@ -572,7 +615,6 @@ namespace OstrixMods.EarthWorks
             float roadWidth = signedLateral >= 0f
                 ? Mathf.Lerp(a.LeftWidth, b.LeftWidth, widthT)
                 : Mathf.Lerp(a.RightWidth, b.RightWidth, widthT);
-            float shoulder = EarthWorksPlugin.EffectiveShoulderWidth;
             float distance = Mathf.Sqrt(bestSquared);
             if (distance > roadWidth + shoulder)
             {
@@ -678,18 +720,18 @@ namespace OstrixMods.EarthWorks
         private static void CalculateBounds(
             IReadOnlyList<CenterSample> center,
             float endBlendLength,
+            float shoulder,
             out Vector3 resultCenter,
             out float radius)
         {
             Vector3 minimum = center[0].Position;
             Vector3 maximum = minimum;
-            float padding = EarthWorksPlugin.EffectiveShoulderWidth + endBlendLength;
+            float padding = shoulder + endBlendLength;
             foreach (CenterSample sample in center)
             {
                 minimum = Vector3.Min(minimum, sample.Position);
                 maximum = Vector3.Max(maximum, sample.Position);
-                padding = Mathf.Max(padding, Mathf.Max(sample.LeftWidth, sample.RightWidth) +
-                    EarthWorksPlugin.EffectiveShoulderWidth);
+                padding = Mathf.Max(padding, Mathf.Max(sample.LeftWidth, sample.RightWidth) + shoulder);
             }
             resultCenter = (minimum + maximum) * 0.5f;
             resultCenter.y = center[0].Position.y;

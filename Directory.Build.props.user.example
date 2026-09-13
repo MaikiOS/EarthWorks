@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <ProfileRoot>C:\path\to\Thunderstore\profiles\YourProfile</ProfileRoot>
+    <ValheimManagedDir>C:\path\to\Valheim\valheim_Data\Managed</ValheimManagedDir>
+  </PropertyGroup>
+</Project>

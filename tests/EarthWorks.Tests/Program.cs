@@ -13,6 +13,7 @@ internal static class Program
         Run("Road project formats v1-v4 remain readable", RoadProjectFormatsRemainReadable);
         Run("Road project v4 round-trips", RoadProjectRoundTrips);
         Run("Invalid road project payloads are rejected", InvalidPayloadsAreRejected);
+        Run("Embedded English localization loads", EmbeddedEnglishLocalizationLoads);
         System.Console.WriteLine(failures == 0
             ? "All EarthWorks persistence tests passed."
             : failures + " EarthWorks persistence test(s) failed.");
@@ -79,6 +80,15 @@ internal static class Program
         byte[] valid = CreateRecord().Serialize();
         Array.Resize(ref valid, valid.Length / 2);
         True(!RoadProjectRecord.TryDeserialize(valid, out _));
+    }
+
+    private static void EmbeddedEnglishLocalizationLoads()
+    {
+        var english = EarthWorksTranslationCatalog.LoadBuiltIn("English");
+        var russian = EarthWorksTranslationCatalog.LoadBuiltIn("Russian");
+        Equal("Route", english["piece_name"]);
+        Equal("Маршрут", russian["piece_name"]);
+        Equal(english.Count, russian.Count);
     }
 
     private static RoadProjectRecord CreateRecord()

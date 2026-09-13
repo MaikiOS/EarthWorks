@@ -85,6 +85,7 @@ dotnet run --project .\tests\EarthWorks.GeometryTests\EarthWorks.GeometryTests.c
 - [Runtime test protocol](TESTING.md)
 - [Changelog](CHANGELOG.md) · [Русский](CHANGELOG_RU.md)
 - [Contributing](CONTRIBUTING.md) · [Русский](CONTRIBUTING_RU.md)
+- [Architecture](docs/ARCHITECTURE.md) · [Русский](docs/ARCHITECTURE_RU.md)
 - [0.6.3 release notes](docs/RELEASE_0.6.3.md) · [Русский](docs/RELEASE_0.6.3_RU.md)
 
 ## License
