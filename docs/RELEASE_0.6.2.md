@@ -37,12 +37,14 @@ Valheim 1.0 добавил в интерфейс `Hoverable` метод `float G
 
 Valheim не запускался при подготовке этого релиза. Полный игровой acceptance — выполнение всех стадий, reload/restart, второй клиент и survival-проверка — остаётся отдельным следующим шагом.
 
+Исходный код опубликован для изучения и Pull Requests, но остаётся собственностью Ostrix. Условия личного использования официальной сборки и получения письменного разрешения на повторное использование кода находятся в [LICENSE.md](../LICENSE.md).
+
 ## SHA-256
 
 ```text
 EarthWorks.dll          CBFBA2A4C679E28DCE1B8D846445FAF1FD2B863A9E7429EC11F2E693D7F98F21
 EarthWorks.Geometry.dll B396C0100C004ADA764AF7F7D1825E469DB8FC3A4BFEFA3393BDBD04CCCE7668
-EarthWorks-0.6.2.zip    9A779215514AEE22562B6663EE3EB8F6218D23FC0A71BF3D2FACD63E49D30E21
+EarthWorks-0.6.2.zip    303A6A711149E8A3980A214A7D624BAC2E0298DA42679336996A6DFC3B9CA842
 ```
 
 Полный план развития: [ROADMAP_RU.md](../ROADMAP_RU.md).

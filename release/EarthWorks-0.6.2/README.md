@@ -30,6 +30,10 @@ Developer instant construction is restricted to character `Test` in world `Terra
 
 Install BepInExPack Valheim and Jotunn, then copy `EarthWorks.dll` and `EarthWorks.Geometry.dll` into one folder under `BepInEx/plugins`.
 
+## License
+
+Official unmodified binaries may be used for personal, non-commercial gameplay. The source is proprietary and source-available: Pull Requests are welcome, but reuse in another project requires prior written permission from Ostrix. See `LICENSE.md`.
+
 ---
 
 # EarthWorks по-русски
@@ -39,3 +43,5 @@ EarthWorks позволяет проектировать многоточечн�
 Версия 0.6.2 совместима с Valheim 1.0.7 и исправляет загрузку проектной таблички после добавления `Hoverable.GetHoverOffset()` в Valheim 1.0.
 
 Это тестовая сборка. Полная игровая проверка выполняется отдельно в лабораторном мире и не входит в статическую проверку ZIP.
+
+Исходный код является собственностью Ostrix. Его можно просматривать и форкать для Pull Request; другое использование требует предварительного письменного разрешения. Официальную неизменённую сборку можно использовать для личной некоммерческой игры.
