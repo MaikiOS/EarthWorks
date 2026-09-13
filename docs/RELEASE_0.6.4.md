@@ -31,6 +31,16 @@ English and Russian remain built into `EarthWorks.dll`. Translators may optional
 
 Full single-player, reload, reconnect, and multiplayer runtime acceptance remains pending. The game was not launched while preparing this release.
 
+## Verified artifacts
+
+```text
+EarthWorks.dll           E7417846F3FA26678CB361996591F254F06F8694C0E2B5DFFB8D131941D7C55D
+EarthWorks.Geometry.dll  2CDBF136BC9159092FBA1A6AE78F9158A1098BA4D9B4E8E0CA78AA0A86D1DB0F
+EarthWorks-0.6.4.zip      F002EB6CE72A88C6DAC1EA1A287772438022ADFF377910488114CE3BC4C7446A
+```
+
+Only `EarthWorks.dll` was installed into the closed-game `TerrainRamp-1.0-Test` profile. Its installed hash matches the release DLL. Twenty-eight protected BepInEx/core, Jotunn, TerrainRamp, BuildWorks, TestBootstrap, and EarthWorks.Geometry files were hash-checked before and after deployment; none changed.
+
 ## License
 
 EarthWorks remains proprietary source-available software. Official unmodified binaries may be used for personal non-commercial play. Forks are allowed to prepare Pull Requests. Code reuse, modified binary distribution, and commercial use require prior written permission from Ostrix; see `LICENSE.md`.

@@ -8,4 +8,4 @@ Valheim 1.0 added `float GetHoverOffset()` to `Hoverable`. Without it, `RoadProj
 
 Release verification completed with zero build warnings/errors, 24/24 geometry checks, API-contract audit, package inspection, and independent read-only review. Valheim itself was not launched.
 
-EarthWorks 0.6.3 supersedes this build for current Valheim versions.
+EarthWorks 0.6.4 supersedes this build for current Valheim versions.
