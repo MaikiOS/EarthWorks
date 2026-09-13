@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>EarthWorks.Tests</AssemblyName>
+    <ProfileRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\'))</ProfileRoot>
+    <ValheimManagedDir Condition="'$(ValheimManagedDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</ValheimManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\EarthWorks\EarthWorks.csproj" />
+    <Reference Include="BepInEx">
+      <HintPath>$(ProfileRoot)BepInEx\core\BepInEx.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(ProfileRoot)BepInEx\core\0Harmony.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Jotunn">
+      <HintPath>$(ProfileRoot)BepInEx\plugins\ValheimModding-Jotunn\Jotunn.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="assembly_valheim">
+      <HintPath>$(ValheimManagedDir)\assembly_valheim.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="assembly_utils">
+      <HintPath>$(ValheimManagedDir)\assembly_utils.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ValheimManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ValheimManagedDir)\UnityEngine.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

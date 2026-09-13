@@ -88,6 +88,14 @@ try {
     Assert-Method 'GameCamera' 'UpdateMouseCapture' 'System.Void' @() | Out-Null
     Assert-Method 'Player' 'TakeInput' 'System.Boolean' @() | Out-Null
     Assert-Method 'Player' 'OnDamaged' 'System.Void' @('HitData') | Out-Null
+    Assert-Method 'Player' 'GetPlayer' 'Player' @('System.Int64') | Out-Null
+    Assert-Method 'ZNet' 'GetPeer' 'ZNetPeer' @('System.Int64') | Out-Null
+    Assert-Method 'ZNet' 'GetUID' 'System.Int64' @() | Out-Null
+    Assert-Field 'ZNetPeer' 'm_playerID' 'System.Int64'
+    Assert-Method 'PrivateArea' 'IsEnabled' 'System.Boolean' @() | Out-Null
+    Assert-Method 'PrivateArea' 'IsInside' 'System.Boolean' @('UnityEngine.Vector3', 'System.Single') | Out-Null
+    Assert-Method 'PrivateArea' 'IsPermitted' 'System.Boolean' @('System.Int64') | Out-Null
+    Assert-Field 'PrivateArea' 'm_allAreas' 'System.Collections.Generic.List`1<PrivateArea>'
 
     $terrainSource = Get-Content -LiteralPath $TerrainApplierPath -Raw
     $saveCalls = ([regex]::Matches($terrainSource, 'SaveMethod\.Invoke\(batch\.Compiler, new object\[\] \{ false \}\);')).Count

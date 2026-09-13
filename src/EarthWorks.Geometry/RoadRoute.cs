@@ -5,6 +5,7 @@ namespace OstrixMods.EarthWorks.Geometry
 {
     public enum RouteControlMode
     {
+        // Persisted in RoadProjectRecord. Never renumber existing values.
         XSpline = 0,
         Corner = 1,
         Bezier = 2,

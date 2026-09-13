@@ -7,16 +7,18 @@ namespace OstrixMods.EarthWorks
 {
     internal enum RoadElevationMode
     {
-        Automatic,
-        Anchored,
-        SingleElevation,
-        UniformGrade
+        // Persisted in RoadProjectRecord. Never renumber existing values.
+        Automatic = 0,
+        Anchored = 1,
+        SingleElevation = 2,
+        UniformGrade = 3
     }
 
     internal enum RoadSurface
     {
-        Bare,
-        Paved
+        // Persisted in RoadProjectRecord. Never renumber existing values.
+        Bare = 0,
+        Paved = 1
     }
 
     internal enum RoadEditorPreviewMode
@@ -28,13 +30,14 @@ namespace OstrixMods.EarthWorks
 
     internal enum RoadProjectStage
     {
-        Setup,
-        Marking,
-        Clearing,
-        Earthworks,
-        Surfacing,
-        Completion,
-        Completed
+        // Stored in the board ZDO. Never renumber existing values.
+        Setup = 0,
+        Marking = 1,
+        Clearing = 2,
+        Earthworks = 3,
+        Surfacing = 4,
+        Completion = 5,
+        Completed = 6
     }
 
     internal enum RoadSelectionKind
@@ -402,9 +405,8 @@ namespace OstrixMods.EarthWorks
                 record = parsed;
                 return true;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                EarthWorksPlugin.Log?.LogWarning("Rejected invalid EarthWorks project data: " + exception.Message);
                 return false;
             }
         }

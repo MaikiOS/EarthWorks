@@ -5,10 +5,11 @@ namespace OstrixMods.EarthWorks.Geometry
 {
     public enum RoadLongitudinalProfile
     {
-        Linear,
-        LinearJoined,
-        SoftEnds,
-        Smooth
+        // Persisted in RoadProjectRecord. Never renumber existing values.
+        Linear = 0,
+        LinearJoined = 1,
+        SoftEnds = 2,
+        Smooth = 3
     }
 
     public readonly struct RoadEndpointPlane

@@ -326,12 +326,13 @@ namespace OstrixMods.EarthWorks
                 return;
             }
             RefreshRecord();
-            Player worker = Player.m_localPlayer;
-            if (record == null || !EarthWorksPlugin.IsDeveloperLab(worker))
+            Player worker = RoadProjectAuthority.ResolvePlayer(sender);
+            if (record == null || !EarthWorksPlugin.IsDeveloperLab(worker) ||
+                Vector3.Distance(worker.transform.position, transform.position) > 5f)
             {
                 return;
             }
-            if (!PrivateArea.CheckAccess(transform.position, 0f, false, false))
+            if (!RoadProjectAuthority.HasPrivateAreaAccess(worker, transform.position))
             {
                 Notify(EarthWorksLocalization.Text("board_access_lost"));
                 return;
